@@ -17,6 +17,7 @@ trait JsonFormats {
 
 
   implicit val E14Format = Json.format[E14]
+  implicit val CandidatoFormat = Json.format[Candidato]
   implicit val DetalleReporteFormat = Json.format[DetalleReporteJson]
   implicit val ReporteFormat = Json.format[ReporteE14Json]
 }

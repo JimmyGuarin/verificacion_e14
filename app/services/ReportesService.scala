@@ -55,10 +55,16 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json) = {
     val reporteE14 = ReporteE14(reporteJson.e14Id, usuario.id.get, reporteJson.valido)
     val detallesReporte = reporteJson.detalles.map{ detalle =>
-      DetalleReporteSospechoso(reporteJson.e14Id, detalle.)
+      DetalleReporteSospechoso(reporteJson.e14Id, detalle.candidatoId, detalle.votosSospechosos)
     }
     reporteE14Dao.guardarReporte(reporteE14)
+  }
 
+  def guardarDetalles(detallesReporte: Seq[DetalleReporteSospechoso]) = {
+    val seqFuture = detallesReporte.map{ detalle =>
+      detalleReporteDao.guardarDetalle(detalle)
+    }
+    Future.sequence(seqFuture)
   }
 
 }

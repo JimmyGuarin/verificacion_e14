@@ -39,11 +39,11 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
       .map(candidatos => CustomResponse.apply(Right(candidatos)))
   }
 
-  def guardarReporte = Action.async { implicit rs =>
-    CustomResponse.asyncResultz {
-      val usuario = Usuario("test", Some(1)) //TODO
-      ???
-    }
-    ???
-  }
+//  def guardarReporte = Action.async { implicit rs =>
+//    CustomResponse.asyncResultz {
+//      val usuario = Usuario("test", Some(1)) //TODO
+//      ""
+//    }
+//    ""
+//  }
 }
