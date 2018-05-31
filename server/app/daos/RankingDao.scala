@@ -2,8 +2,6 @@ package daos
 
 import scala.concurrent.{ ExecutionContext, Future }
 import javax.inject.Inject
-
-import models.Ranking
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
 import slick.jdbc.JdbcProfile

@@ -3,8 +3,6 @@ package controllers.api
 import javax.inject.Singleton
 
 import core.CustomResponse
-import daos.UserDao
-import models.User
 import play.api.mvc.{AbstractController, ControllerComponents}
 
 import scala.concurrent.{ExecutionContext, Future}

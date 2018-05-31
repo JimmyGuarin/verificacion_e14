@@ -3,7 +3,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 
 import core.CustomResponseTypes
-import models.User
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
 import slick.jdbc.JdbcProfile

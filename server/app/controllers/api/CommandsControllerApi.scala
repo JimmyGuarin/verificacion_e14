@@ -1,8 +1,6 @@
 package controllers.api
 
 import javax.inject.Singleton
-
-import daos.CammandDao
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 

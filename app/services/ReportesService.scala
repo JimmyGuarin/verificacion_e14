@@ -2,6 +2,7 @@ package services
 
 import javax.inject.Singleton
 
+import core.CustomResponse
 import daos.{CandidatoDao, DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
 import models._
 import play.api.http.Status
@@ -52,19 +53,31 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
     }
   }
 
-  def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json) = {
+  def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
     val reporteE14 = ReporteE14(reporteJson.e14Id, usuario.id.get, reporteJson.valido)
     val detallesReporte = reporteJson.detalles.map{ detalle =>
       DetalleReporteSospechoso(reporteJson.e14Id, detalle.candidatoId, detalle.votosSospechosos)
     }
-    reporteE14Dao.guardarReporte(reporteE14)
+    for{
+      reporteGuardado <- reporteE14Dao.guardarReporte(reporteE14)
+      _ <- guardarDetalles(detallesReporte)
+    } yield {
+      reporteGuardado
+    }
   }
 
-  def guardarDetalles(detallesReporte: Seq[DetalleReporteSospechoso]) = {
-    val seqFuture = detallesReporte.map{ detalle =>
+  private def guardarDetalles(detallesReporte: Seq[DetalleReporteSospechoso]): Future[CustomResponse.ApiResponsez[String]] = {
+    val seqFuture = detallesReporte.map { detalle =>
       detalleReporteDao.guardarDetalle(detalle)
     }
-    Future.sequence(seqFuture)
+
+    Future.sequence(seqFuture).map { seqSaves =>
+      val zero: CustomResponse.ApiResponsez[String] = "Nothing saved".right
+      seqSaves.foldLeft(zero){ case (nextResponse, _) =>
+          nextResponse
+      }
+    }
+//    Future.sequence(seqFuture)
   }
 
 }

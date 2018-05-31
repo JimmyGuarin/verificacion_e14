@@ -3,7 +3,7 @@ package daos
 import javax.inject.Inject
 
 import core.CustomResponse.ApiResponsez
-import models.{E14, ReporteE14, User}
+import models.{E14, ReporteE14}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
