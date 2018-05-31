@@ -1,0 +1,28 @@
+
+GET     /commands                   controllers.api.CommandsControllerApi.allCommands
+GET     /categorys                  controllers.api.CategoryControllerApi.allCategories
+GET     /rankings                   controllers.api.RankingControllerApi.allRankings
+
+
+# Users operations
+GET     /users                      controllers.api.UserControllerApi.allUsers
+
+###
+# summary: Create user
+# description: >-
+#   Allows adding a new user to the system
+# parameters:
+#   - name: User info
+#     in: body
+#     schema:
+#       $ref: "#/definitions/models.User"
+#     required: true
+# responses:
+#   400:
+#     description: User already exists
+#   200:
+#     description: User created successfully
+# security:
+#   Authorization: []
+###
+POST    /users                      controllers.api.UserControllerApi.saveUser
