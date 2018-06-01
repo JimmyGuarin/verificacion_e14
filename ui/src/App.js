@@ -6,8 +6,6 @@ import {
   Link
 } from 'react-router-dom';
 
-import Client from "./Client";
-
 import reactLogo from './images/react.svg';
 import playLogo from './images/play.svg';
 import scalaLogo from './images/scala.png';
@@ -29,19 +27,11 @@ class App extends Component {
     this.state = {title: ''};
   }
 
-  async componentDidMount() {
-    Client.getSummary(summary => {
-      this.setState({
-        title: summary.content
-      });
-    });
-  }
-
   render() {
     return (
       <Router>
         <div className="App">
-          <h1>Verification E14 {this.state.title}!</h1>
+          <h1>Verification E14</h1>
           <MainContent />
         </div>
       </Router>

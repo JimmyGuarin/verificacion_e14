@@ -22,14 +22,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 ### NoDocs ###
 # GET     /*file                      controllers.HomeController.assetOrDefault(file)
 
-### NoDocs ###
-GET     /api/twitter/request        controllers.HomeController.twitterRequestToken
-
-### NoDocs ###
-POST     /api/twitter/request        controllers.HomeController.twitterRequestToken
-
-### NoDocs ###
-GET     /*file                      controllers.HomeController.assetOrDefault(file)
-
 # Api definition
 ->     /api                          api.Routes

@@ -63,28 +63,28 @@ class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponen
   val CALLBACK_URL = "oob"
 
 
-  def twitterRequestToken_ = Action {
-    val url = "https://api.twitter.com/oauth/request_token"
-
-    val header = Request.generateHeader(url)
-    Logger.debug(s"twitterRequestToken header $header")
-    val response = wsClient.url(url)
-      .withHttpHeaders("Authorization" -> header)
-      .post(EmptyBody)
-
-    response.onComplete{ tresponse =>
-      tresponse match {
-        case Success(resp) =>
-          Logger.debug(s"Success ${resp.status}")
-          Logger.debug(s"Success ${resp.body}")
-        case Failure(error) =>
-          Logger.error("Error", error)
-      }
-    }
-
-    val token = "nothing"
-//    val token = Request.read(url)
-    Logger.debug(s"Token from Twitter $token")
-    Ok(token)
-  }
+//  def twitterRequestToken_ = Action {
+//    val url = "https://api.twitter.com/oauth/request_token"
+//
+//    val header = Request.generateHeader(url)
+//    Logger.debug(s"twitterRequestToken header $header")
+//    val response = wsClient.url(url)
+//      .withHttpHeaders("Authorization" -> header, "" -> "")
+//      .post(EmptyBody)
+//
+//    response.onComplete{ tresponse =>
+//      tresponse match {
+//        case Success(resp) =>
+//          Logger.debug(s"Success ${resp.status}")
+//          Logger.debug(s"Success ${resp.body}")
+//        case Failure(error) =>
+//          Logger.error("Error", error)
+//      }
+//    }
+//
+//    val token = "nothing"
+////    val token = Request.read(url)
+//    Logger.debug(s"Token from Twitter $token")
+//    Ok(token)
+//  }
 }

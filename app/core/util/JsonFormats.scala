@@ -4,7 +4,10 @@ import models._
 import play.api.libs.json.Json
 
 case class DetalleReporteJson(candidatoId: Int, votosSospechosos: Int)
-case class ReporteE14Json(e14Id: Int, valido: Boolean, captchaToken: String, detalles: Seq[DetalleReporteJson] = Nil)
+case class ReporteE14Json(e14Id: Int, valido: Boolean, captchaToken: Option[String] = None,
+                          detalles: Seq[DetalleReporteJson] = Nil)
+
+case class RespuestaCaptcha(success: Boolean)
 
 case class TwitterToken(oauth_token: String, oauth_token_secret: String)
 
@@ -18,6 +21,8 @@ trait JsonFormats {
   implicit val MunicipioFormat = Json.format[Municipio]
 
   implicit val twitterTokenFormat = Json.format[TwitterToken]
+
+  implicit val RespuestaCaptchaFormat = Json.format[RespuestaCaptcha]
 }
 
 object JsonFormats extends JsonFormats {

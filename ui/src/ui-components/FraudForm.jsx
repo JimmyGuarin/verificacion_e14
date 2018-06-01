@@ -33,9 +33,9 @@ export default class FraudForm extends Component {
     });
   }
 
-  sendData() {
+  sendData(captchaValue) {
     const { handleSendFraud } = this.props;
-    handleSendFraud(this.candidatesAdded);
+    handleSendFraud(this.candidatesAdded, captchaValue);
   }
 
   render() {

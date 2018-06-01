@@ -20,7 +20,7 @@ export default class CandidatesSelected extends Component {
   tryToSend() {
     const { onSend } = this.props;
     if (this.captcha) {
-      onSend();
+      onSend(this.captcha);
     } else {
       alert("Completa el captcha");
     }

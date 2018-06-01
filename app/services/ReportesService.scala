@@ -8,15 +8,23 @@ import play.api.http.Status
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.Random
+import scala.util.{Failure, Random, Success}
 import core.CustomResponse.{ApiResponsez, _}
-import core.util.{DetalleReporteJson, ReporteE14Json}
+import core.util.{DetalleReporteJson, ReporteE14Json, RespuestaCaptcha}
 import scalaz._
 import Scalaz._
+import controllers.Request
+import play.api.Logger
+import play.api.libs.ws.{EmptyBody, WSClient}
 
 @Singleton
-class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: ReporteE14Dao, detalleReporteDao: DetalleReporteSospechosoDao)(
-  implicit executionContext: ExecutionContext){
+class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
+                                             wsClient: WSClient,
+                                             reporteE14Dao: ReporteE14Dao,
+                                             detalleReporteDao: DetalleReporteSospechosoDao)(
+                                              implicit executionContext: ExecutionContext) {
+
+  import core.util.JsonFormats._
 
   val random = new Random()
 
@@ -27,13 +35,13 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
       val totalPorUsuario = Await.result(reporteE14Dao.totalReportesPorUsuario(usuario.id.get), Duration.Inf) == totalE14
       var stop = totalPorUsuario
 
-      while(!stop){
+      while (!stop) {
         val randomId = random.nextInt(maxId)
         val next = reporteE14Dao.getReporte(usuario.id.get, randomId)
         val res = Await.result(next, Duration.Inf)
-        if(res.isEmpty){
+        if (res.isEmpty) {
           val maybeE14 = Await.result(e14Dao.getById(randomId), Duration.Inf)
-          if(maybeE14.isDefined) {
+          if (maybeE14.isDefined) {
             nextRandomE14 = maybeE14
             stop = true
           }
@@ -42,7 +50,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
       nextRandomE14
     }
 
-    for{
+    for {
       maxId <- e14Dao.getMaxId()
       totalE14 <- e14Dao.totalRegistros()
       nextRandom <- nextRandomE14(maxId, totalE14)
@@ -54,7 +62,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
     val reporteE14 = ReporteE14(reporteJson.e14Id, usuario.id.get, reporteJson.valido)
 
-    for{
+    for {
       reporteGuardado <- reporteE14Dao.guardarReporte(reporteE14)
       mensaje <- guardarDetalles(reporteGuardado, reporteJson.detalles)
     } yield {
@@ -63,7 +71,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
   }
 
   private def guardarDetalles(reporte: ReporteE14, detallesReporteJson: Seq[DetalleReporteJson]): Future[CustomResponse.ApiResponsez[String]] = {
-    val detallesReporte = detallesReporteJson.map{ detalle =>
+    val detallesReporte = detallesReporteJson.map { detalle =>
       DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos)
     }
     val seqFuture = detallesReporte.map { detalle =>
@@ -72,11 +80,32 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
 
     Future.sequence(seqFuture).map { seqSaves =>
       val zero: CustomResponse.ApiResponsez[String] = "Nothing saved".right
-      seqSaves.foldLeft(zero){ case (nextResponse, _) =>
-          nextResponse
+      seqSaves.foldLeft(zero) { case (nextResponse, _) =>
+        nextResponse
       }
     }
-//    Future.sequence(seqFuture)
+    //    Future.sequence(seqFuture)
   }
 
+  def validarCaptcha(valorCaptcha: Option[String], e14Valido: Boolean): Future[CustomResponse.ApiResponsez[Unit]] = {
+    if (e14Valido) {
+      Future.apply(().right)
+    } else {
+      valorCaptcha.map(c => {
+        val url = "https://www.google.com/recaptcha/api/siteverify"
+        val response = wsClient.url(url)
+          .post(Map("secret" -> Seq("6Ld9zlwUAAAAAEsWpx0O2CWbWGT9A9mjHZKoCwI3"), "response" -> Seq(c)))
+        response.map { wsResponse =>
+          val respuestaCaptcha = wsResponse.json.validate[RespuestaCaptcha].get
+          if (respuestaCaptcha.success) {
+            ().right
+          } else {
+            ApiError(400, "Error Validando Captcha", "Error Validando Captcha").left
+          }
+        }
+      }).getOrElse(
+        Future.apply(ApiError(400, "", "").left)
+      )
+    }
+  }
 }

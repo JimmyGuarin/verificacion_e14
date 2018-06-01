@@ -54,11 +54,13 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
   }
 
   def guardarReporte = Action.async(parse.json) { implicit rs =>
+
     CustomResponse.asyncResultz {
       val usuario = Usuario("test", Some(1)) //TODO
       val result: EitherT[Future, CustomResponse.ApiError, String] =
         for {
           reporteJson <- EitherT(CustomResponse.jsonToResponseAsync(rs.body.validate[ReporteE14Json]))
+          _ <- EitherT(reportesService.validarCaptcha(reporteJson.captchaToken, reporteJson.valido))
           mensaje <- EitherT(reportesService.guardarReporte(usuario, reporteJson))
         } yield {
           mensaje

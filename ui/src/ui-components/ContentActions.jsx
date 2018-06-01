@@ -29,10 +29,10 @@ export default class ContentActions extends Component {
     console.log("Cancel handleFraud")
     this.setState({clear: true});
   }
-  handleSendFraud = (payload) => {
+  handleSendFraud = (candidates, captchaCode) => {
     //TODO SENT TO SERVER AND NEXT 
     const { sendReport} = this.props;
-    sendReport(payload);
+    sendReport(candidates, captchaCode);
   }
   
   render() {

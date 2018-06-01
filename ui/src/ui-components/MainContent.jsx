@@ -18,17 +18,18 @@ export default class MainContent extends Component {
     this.handleDismiss = this.handleDismiss.bind(this);
   }
 
-  sendToReport(payload) {
+  sendToReport(candidates, captchaCode) {
     //senddata
     this.setState({loading: true});
     let data = {
       e14Id: this.e14File.id, 
       valido: true,
-      detalles: payload
+      detalles: candidates
     };
-    if (payload) 
-      data.valido = false;  
-    
+    if (candidates) {
+      data.valido = false; 
+      data.captchaToken = captchaCode;
+    }
     sendReport(data).then(res => {
       this.setState({sendOk: true});
       this.fetchE14();
