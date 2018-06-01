@@ -1,4 +1,24 @@
 /* eslint-disable no-undef */
+import  LoginWithTwitter from 'login-with-twitter';
+
+const cb = (b) => {
+  console.log(b);
+}
+
+const tw = new LoginWithTwitter({
+  consumerKey: 'bFSpZOQdH1DCLCFkNY7FgW181',
+  consumerSecret: 'R1ael71lFeX0zlbu9NJ8wZe2lLZ3ILwpO6TEMRV3Dbeu7pZrVq',
+  callbackUrl: 'https://example.com/twitter/callback'
+});
+
+
+
+console.log("tw", tw);
+
+console.log("tw2", tw.login(cb));
+
+
+
 function getSummary(cb) {
   return fetch('/summary', {
     accept: "application/json"
@@ -20,7 +40,7 @@ function checkStatus(response) {
 }
 
 function parseJSON(response) {
-  return response.json();
+ return response
 }
 
 const Client = { getSummary };

@@ -4,7 +4,7 @@ import models._
 import play.api.libs.json.Json
 
 case class DetalleReporteJson(candidatoId: Int, votosSospechosos: Int)
-case class ReporteE14Json(e14Id: Int, valido: Boolean, detalles: Seq[DetalleReporteJson] = Nil)
+case class ReporteE14Json(e14Id: Int, valido: Boolean, captchaToken: String, detalles: Seq[DetalleReporteJson] = Nil)
 
 case class TwitterToken(oauth_token: String, oauth_token_secret: String)
 
