@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+.container-response {
+  height: 450px;
+}
+
+tr {
+  text-align: center;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
 }

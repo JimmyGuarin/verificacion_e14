@@ -20,7 +20,7 @@ function checkStatus(response) {
 }
 
 function parseJSON(response) {
-  return response.json();
+ return response
 }
 
 const Client = { getSummary };
