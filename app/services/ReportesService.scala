@@ -1,7 +1,6 @@
 package services
 
 import javax.inject.Singleton
-
 import core.CustomResponse
 import daos.{CandidatoDao, DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
 import models._
@@ -11,8 +10,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.Random
 import core.CustomResponse.{ApiResponsez, _}
-import core.util.ReporteE14Json
-
+import core.util.{DetalleReporteJson, ReporteE14Json}
 import scalaz._
 import Scalaz._
 
@@ -55,18 +53,19 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao, reporteE14Dao: Repo
 
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
     val reporteE14 = ReporteE14(reporteJson.e14Id, usuario.id.get, reporteJson.valido)
-    val detallesReporte = reporteJson.detalles.map{ detalle =>
-      DetalleReporteSospechoso(reporteJson.e14Id, detalle.candidatoId, detalle.votosSospechosos)
-    }
+
     for{
       reporteGuardado <- reporteE14Dao.guardarReporte(reporteE14)
-      _ <- guardarDetalles(detallesReporte)
+      mensaje <- guardarDetalles(reporteGuardado, reporteJson.detalles)
     } yield {
-      reporteGuardado
+      mensaje
     }
   }
 
-  private def guardarDetalles(detallesReporte: Seq[DetalleReporteSospechoso]): Future[CustomResponse.ApiResponsez[String]] = {
+  private def guardarDetalles(reporte: ReporteE14, detallesReporteJson: Seq[DetalleReporteJson]): Future[CustomResponse.ApiResponsez[String]] = {
+    val detallesReporte = detallesReporteJson.map{ detalle =>
+      DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos)
+    }
     val seqFuture = detallesReporte.map { detalle =>
       detalleReporteDao.guardarDetalle(detalle)
     }

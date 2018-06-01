@@ -24,8 +24,11 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
     db.run(result).map(_.headOption)
   }
 
-  def guardarReporte(reporteE14: ReporteE14): Future[ApiResponsez[String]] = {
-    db.run(reportesE14Table += reporteE14).map { _ => "Guardado correctamente".right }
+  private val insertQuery = reportesE14Table returning reportesE14Table.map(_.id) into ((item, id) => item.copy(id = Some(id)))
+
+  def guardarReporte(reporteE14: ReporteE14): Future[ReporteE14] = {
+    db.run(insertQuery += reporteE14)
+    //TODO
   }
 
   def totalReportesPorUsuario(usuarioId: Int): Future[Int] = {

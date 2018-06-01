@@ -43,7 +43,7 @@ export default class SelectCandidate extends Component {
   handleChangeSelect(e) {
     this.setState({ 
       selectValue: e.target.value,
-      selectName: this.candidateOptions[e.target.selectedIndex - 1].name
+      selectName: this.candidateOptions[e.target.selectedIndex - 1].nombre
     });
   }
 
@@ -63,12 +63,12 @@ export default class SelectCandidate extends Component {
               componentClass="select" 
               placeholder="select"
               value={this.state.selectValue}
-              data-name="select"
+              data-nombre="select"
               onChange={this.handleChangeSelect}>
               <option value="">Select...</option>
               {
                 this.candidateOptions.map( c => {
-                  return (<option value={c.id} data-name={c.name}>{c.name}</option>)
+                  return (<option value={c.id} data-nombre={c.nombre}>{c.nombre}</option>)
                 })
               }
             </FormControl>

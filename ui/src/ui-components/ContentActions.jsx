@@ -3,13 +3,12 @@ import { Row, Col, Button } from 'react-bootstrap';
 import ActionButtons from './ActionButtons';
 import FraudForm from './FraudForm';
 
-
 export default class ContentActions extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
-        clear: true
+      clear: true,
     }
     this.handleSucess = this.handleSucess.bind(this);
     this.handleFraud = this.handleFraud.bind(this);
@@ -18,11 +17,11 @@ export default class ContentActions extends Component {
   }
   
   handleSucess = () => {
-    //TODO SENT TO SERVER AND NEXT
+    const { sendReport} = this.props;
+    sendReport([]);
   }
 
   handleFraud = () => {
-    console.log("handleFraud")
     this.setState({clear: false});
   }
 
@@ -32,7 +31,8 @@ export default class ContentActions extends Component {
   }
   handleSendFraud = (payload) => {
     //TODO SENT TO SERVER AND NEXT 
-    console.log("handleSendFraud") 
+    const { sendReport} = this.props;
+    sendReport(payload);
   }
   
   render() {

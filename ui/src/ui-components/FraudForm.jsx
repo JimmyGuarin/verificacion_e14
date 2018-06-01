@@ -1,49 +1,51 @@
 import React, {Component} from 'react';
 import SelectCandidate from './SelectCandidate';
 import CandidatesSelected from './CandidatesSelected';
-
-
+import { getCandidates } from "../webapi/endpoints";
 
 export default class FraudForm extends Component {
   constructor(props) {
     super(props);
     this.setAdded = this.setAdded.bind(this);
     this.sendData = this.sendData.bind(this);
-    this.candidates = [
-      {
-        id: 1,
-        name: "Iván Duque"
-      },
-      {
-        id: 2,
-        name: "Gustavo Petro"
-      }
-    ]
     this.candidatesAdded = [];
     this.state = {
-      added: 0
+      added: 0,
+      loading: true
     }
   }
 
   setAdded(candidateId, candidateName, votesNumber) {
     console.log("setAdded");
     this.candidatesAdded.push({
-      id: candidateId,
-      name: candidateName,
-      votes: votesNumber
+      candidatoId: parseInt(candidateId),
+      nombre: candidateName,
+      votosSospechosos: parseInt(votesNumber)
     });
     this.candidates = this.candidates.filter(s => s.id != candidateId);
     this.setState({added: this.state.added + 1});
   }
 
+  fetchCandidates = () => {  
+    getCandidates().then(res => {
+      this.candidates  = res.response;
+      this.setState({loading: false});
+    });
+  }
+
   sendData() {
     const { handleSendFraud } = this.props;
-    //TODO CONSTRUIR EL JSON
+    handleSendFraud(this.candidatesAdded);
   }
 
   render() {
     const { handleCancelFraud } = this.props;
     return (
+      this.state.loading ?
+      <div>
+        <h1>CARGANDO...</h1>
+      </div>
+      :
       <div>
         <SelectCandidate 
           candidates={this.candidates}
@@ -57,5 +59,8 @@ export default class FraudForm extends Component {
         />
       </div>
     );
+  }
+  componentDidMount() {
+    this.fetchCandidates();
   }
 }

@@ -7,8 +7,9 @@ export default class IframeComponent extends Component {
 
 
   render() {
+    const { link } = this.props;
     return (
-        <Iframe url="https://visor.e14digitalizacion.com/e14_divulgacion/01/001/001/PRE/3279017_E14_PRE_X_01_001_001_XX_01_005_X_XXX.pdf"
+        <Iframe url={link}
         position="absolute"
         width="50%"
         height="450px"

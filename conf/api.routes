@@ -1,0 +1,3 @@
+GET     /newe14          controllers.api.ReportesControllerApi.getRandomE14
+GET     /candidates      controllers.api.ReportesControllerApi.getCandidatos
+POST     /saveReport      controllers.api.ReportesControllerApi.guardarReporte

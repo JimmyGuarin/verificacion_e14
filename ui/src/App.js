@@ -42,7 +42,6 @@ class App extends Component {
       <Router>
         <div className="App">
           <h1>Verification E14 {this.state.title}!</h1>
-          <Route path="/:tech" component={Tech} />
           <MainContent />
         </div>
       </Router>
