@@ -12,7 +12,9 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.0.17"
+    "react-google-login": "^3.2.1",
+    "react-scripts": "1.0.17",
+    "react-twitter-auth": "0.0.12"
   },
   "devDependencies": {
     "ncp": "^2.0.0",

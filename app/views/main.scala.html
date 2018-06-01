@@ -23,14 +23,12 @@
         <script src="https://use.fontawesome.com/bacad173cf.js"></script>
     </head>
     <body>
-    <app-root></app-root>
-
-
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/inline.bundle.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/polyfills.bundle.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/styles.bundle.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/vendor.bundle.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/main.bundle.js")"></script>
+        @content
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/inline.bundle.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/polyfills.bundle.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/styles.bundle.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/vendor.bundle.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/ui/main.bundle.js")"></script>
 
     </body>
 </html>

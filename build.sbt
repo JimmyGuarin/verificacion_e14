@@ -19,12 +19,15 @@ scalaVersion := "2.12.3"
 (scalacOptions in ThisBuild) ++= Seq("-Xmax-classfile-name", "130")
 
 // Scala
-libraryDependencies ++= Seq(guice,
+libraryDependencies ++= Seq(
+  guice,
+  ws,
   jdbc,
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "com.typesafe.play" %% "play-slick" % "3.0.1",
   "org.scalaz" %% "scalaz-core" % "7.2.23",
 // Java
   "org.postgresql" % "postgresql" % "42.1.1",
-  "org.webjars" % "swagger-ui" % "2.2.10"
+  "org.webjars" % "swagger-ui" % "2.2.10",
+  "com.twitter" % "joauth" % "6.0.2"
 )
