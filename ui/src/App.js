@@ -4,8 +4,10 @@ import Iframe from 'react-iframe';
 import {
   BrowserRouter as Router,
   Route,
-  Link
+  Link, Switch, 
 } from 'react-router-dom';
+
+import { Redirect } from 'react-router';
 
 import reactLogo from './images/react.svg';
 import playLogo from './images/play.svg';
@@ -13,7 +15,9 @@ import scalaLogo from './images/scala.png';
 import TestJsx from './Test';
 import { Row, Col } from 'react-bootstrap';
 import MainContent from './ui-components/MainContent';
-
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Validar from './pages/Validar';
 
 import './App.css';
 
@@ -30,12 +34,12 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
-        <div className="App">
-          <h1>Verification E14</h1>
-          <MainContent />
-        </div>
-      </Router>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route exact path="/login" component={Login}/>
+        <Route exact path="/validar" component={Validar}/>
+        <Redirect to="/"/>
+      </Switch>
     );
   }
 }
