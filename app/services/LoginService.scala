@@ -19,11 +19,11 @@ class LoginService @javax.inject.Inject()(wsClient: WSClient, configuration: Con
 
   import core.util.JsonFormats._
 
-  lazy val gScope = configuration.get[String]("default_oauth.google_scope")
-  lazy val gGrantType = configuration.get[String]("default_oauth.google_grant_type")
-  lazy val gRedirectUri = configuration.get[String]("oauth_providers.google.redirect_url")
-  lazy val gClientId = configuration.get[String]("oauth_providers.google.redirect_url")
-  lazy val gClientSecret = configuration.get[String]("oauth_providers.google.redirect_url")
+  lazy val gScope = configuration.get[String]("oauth.google.scope")
+  lazy val gGrantType = configuration.get[String]("oauth.google.grant_type")
+  lazy val gRedirectUri = configuration.get[String]("oauth.google.redirect_url")
+  lazy val gClientId = configuration.get[String]("oauth.google.client_id")
+  lazy val gClientSecret = configuration.get[String]("oauth.google.client_secret")
 
 
   def connectWithGoogle(code: String): Future[CustomResponse.ApiResponsez[GTokenResponse]] = {
@@ -39,6 +39,8 @@ class LoginService @javax.inject.Inject()(wsClient: WSClient, configuration: Con
       )
 
     tokenResponse.map { response =>
+      Logger.debug(s"Respuesta de server: $response")
+      Logger.debug(s"Respuesta de server: ${response.body}")
       response.json.validate[GTokenResponse].fold({ errors =>
         CustomResponse.ApiError(500, "Error en respuesta de server", errors.mkString).left
       }, _.right)
@@ -50,9 +52,9 @@ class LoginService @javax.inject.Inject()(wsClient: WSClient, configuration: Con
       .withHttpHeaders("Authorization" -> s"Bearer $token").get()
 
     userInfoResponse.map { response =>
-      Logger.debug(s"Google user info: ${response.json}")
+      Logger.debug(s"Google user info: ${response}")
       response.json.validate[GUserInfo].fold({ errors =>
-        CustomResponse.ApiError(500, "Error en respuesta de server", errors.mkString).left
+        CustomResponse.ApiError(500, "Error en respuesta de server para userInfo", errors.mkString).left
       }, _.right)
     }
   }

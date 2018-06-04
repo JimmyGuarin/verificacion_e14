@@ -1,21 +1,20 @@
 package services
 
 import javax.inject.Singleton
+
 import core.CustomResponse
-import daos.{CandidatoDao, DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
+import core.CustomResponse.{ApiResponsez, _}
+import core.util.{DetalleReporteJson, ReporteE14Json, RespuestaCaptcha}
+import daos.{DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
 import models._
 import play.api.http.Status
+import play.api.libs.ws.WSClient
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Random, Success}
-import core.CustomResponse.{ApiResponsez, _}
-import core.util.{DetalleReporteJson, ReporteE14Json, RespuestaCaptcha}
+import scala.util.Random
+import scalaz.Scalaz._
 import scalaz._
-import Scalaz._
-import controllers.Request
-import play.api.Logger
-import play.api.libs.ws.{EmptyBody, WSClient}
 
 @Singleton
 class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,

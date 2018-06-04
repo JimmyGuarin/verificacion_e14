@@ -41,39 +41,6 @@ class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponen
     if (resource.contains(".")) assets.at(resource) else index
   }
 
-
-  //Twitter stuff
-//  val API_KEY = "j6uL99U6ha4MWfkFeDn9MBp4E"
-//  val API_SECRET = "uDzej1FAg8F3fZy7bUH3NctCKquiH1ujFxodjIJ77Q1kgau2hM"
-//  val CALLBACK_URL = "oob"
-
-
-//  def twitterRequestToken_ = Action {
-//    val url = "https://api.twitter.com/oauth/request_token"
-//
-//    val header = Request.generateHeader(url)
-//    Logger.debug(s"twitterRequestToken header $header")
-//    val response = wsClient.url(url)
-//      .withHttpHeaders("Authorization" -> header, "" -> "")
-//      .post(EmptyBody)
-//
-//    response.onComplete{ tresponse =>
-//      tresponse match {
-//        case Success(resp) =>
-//          Logger.debug(s"Success ${resp.status}")
-//          Logger.debug(s"Success ${resp.body}")
-//        case Failure(error) =>
-//          Logger.error("Error", error)
-//      }
-//    }
-//
-//    val token = "nothing"
-////    val token = Request.read(url)
-//    Logger.debug(s"Token from Twitter $token")
-//    Ok(token)
-//  }
-
-
   def signIn(code: String) = Action.async { implicit rs =>
     val response = (for {
       tokenResponse <- EitherT(loginService.connectWithGoogle(code))

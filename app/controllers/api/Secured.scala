@@ -1,7 +1,5 @@
 package controllers.api
 
-import java.util.{Date, UUID}
-
 import core.CustomResponse
 import daos.UsuarioDao
 import models.Usuario
@@ -31,18 +29,8 @@ trait Secured {
 
   implicit val ec = executionContext
 
-  case class UserRequest[A](user: Usuario,
-                             request: Request[A]) extends WrappedRequest[A](request)
-
-  def runAuthenticated[A](block: (UserRequest[A] => Future[Result]))(implicit request: Request[A]): Future[Result] = {
-    withAuthorizationToken(request).flatMap{ mUsuario =>
-      mUsuario
-        .map(usuario => block(UserRequest(usuario, request)))
-        .getOrElse{
-          Future.apply(CustomResponse.errorResult(CustomResponse.ApiError(401, "Usuario invalido o no autenticado", "Usuario invalido o no autenticado")))
-        }
-    }
-  }
+  case class UserRequest[A](usuario: Usuario,
+                            request: Request[A]) extends WrappedRequest[A](request)
 
   def authenticated[A](request: Request[A])(block: (UserRequest[A] => Future[Result])): Future[Result] = {
     withAuthorizationToken(request).flatMap{ mUsuario =>
@@ -65,21 +53,6 @@ trait Secured {
     result.run
   }
 
-//  def authenticated(parserIn: BodyParsers.Default) = new ActionBuilder[UserRequest, AnyContent] {
-//    override protected def executionContext: ExecutionContext = ec
-//    override def parser: BodyParser[AnyContent] = parserIn
-//
-//    override def invokeBlock[A](request: Request[A], block: (UserRequest[A]) => Future[Result]) = {
-//      withAuthorizationToken(request).flatMap{ mUsuario =>
-//        mUsuario
-//          .map(usuario => block(UserRequest(usuario, request)))
-//          .getOrElse{
-//            Future.apply(CustomResponse.errorResult(CustomResponse.ApiError(401, "Usuario invalido o no autenticado", "Usuario invalido o no autenticado")))
-//          }
-//      }
-//    }
-//  }
-
 
   def authTokenResult(usuario: Usuario)(
                        implicit rh: RequestHeader): Result = {
@@ -97,6 +70,7 @@ trait Secured {
     }.withJwtSession(session)
   }
 
+  //************************************************************Ignore this for now*******************************************//
   //All below copied from pdi.jwt 0.6.0, IDEA hates the library for some reason
   private def sanitizeHeader(header: String): String =
     if (header.startsWith(JwtSession.TOKEN_PREFIX)) {

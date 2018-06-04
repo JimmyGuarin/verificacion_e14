@@ -4,6 +4,8 @@ import ContentActions from './ContentActions';
 import IframeComponent from './IframeComponent';
 import { getNewE14, sendReport } from "../webapi/endpoints";
 
+import GoogleLogin from 'react-google-login';
+
 export default class MainContent extends Component {
   constructor(props) {
     super(props);
@@ -22,18 +24,18 @@ export default class MainContent extends Component {
     //senddata
     this.setState({loading: true});
     let data = {
-      e14Id: this.e14File.id, 
+      e14Id: this.e14File.id,
       valido: true,
       detalles: candidates
     };
     if (candidates) {
-      data.valido = false; 
+      data.valido = false;
       data.captchaToken = captchaCode;
     }
     sendReport(data).then(res => {
       this.setState({sendOk: true});
       this.fetchE14();
-    }, 
+    },
     res => {
       console.log(res);
       this.setState({sendFail: true, loading: false});
@@ -51,7 +53,11 @@ export default class MainContent extends Component {
     this.setState({sendOk: false, sendFail: false});
   }
 
-  
+  responseGoogle(response) {
+    console.log("Response", response);
+  }
+
+
 //TODO CHANGE THE PDF LINK
   render() {
     console.log("render", this.e14File);
@@ -59,34 +65,40 @@ export default class MainContent extends Component {
       this.state.loading ?
       <div>
         <h1>CARGANDO...</h1>
+        <GoogleLogin
+                    clientId="188546035076-p80fv1c9d35a6ra3ogeu6k0n03836v2a.apps.googleusercontent.com"
+                    buttonText="Login"
+                    accessType="online"
+                    onSuccess={this.responseGoogle}
+                    onFailure={this.responseGoogle} />
       </div>
       :
       <div>
         <div>
           {
           this.state.sendOk ?
-            <Alert bsStyle="success" onDismiss={this.handleDismiss}> 
+            <Alert bsStyle="success" onDismiss={this.handleDismiss}>
               <h4>Datos enviados, gracias por aportar a tu pais!</h4>
             </Alert>
           :
           this.state.sendFail ?
-            <Alert bsStyle="danger" onDismiss={this.handleDismiss}> 
+            <Alert bsStyle="danger" onDismiss={this.handleDismiss}>
               <h4>Se ha producido un error enviando los datos!</h4>
-            </Alert> 
+            </Alert>
           : null
-          } 
-        </div>      
+          }
+        </div>
         <div>
-          <IframeComponent 
-            link={this.e14File.link}/> 
-        </div> 
+          <IframeComponent
+            link={this.e14File.link}/>
+        </div>
         <Row>
-          <Col xsOffset={6} xs={6} md={6}> 
-            <ContentActions 
-              sendReport= {this.sendToReport}/>  
-          </Col>  
+          <Col xsOffset={6} xs={6} md={6}>
+            <ContentActions
+              sendReport= {this.sendToReport}/>
+          </Col>
         </Row>
-      </div>  
+      </div>
     );
   }
 
