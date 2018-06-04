@@ -2,7 +2,7 @@ package models
 
 case class E14(link: String, mesa: String, departamento: String, municipio: String, zona: String, puesto: String, id: Option[Int] = None)
 
-case class Usuario(twitterData: String, id: Option[Int] = None)
+case class Usuario(googleId: String, email: String, name: String,  id: Option[Int] = None)
 
 case class Departamento(nombre: String, codigo: String, id: Option[Int] = None)
 

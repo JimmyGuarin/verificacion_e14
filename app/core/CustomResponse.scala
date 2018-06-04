@@ -4,7 +4,8 @@ import play.api.libs.json._
 import play.api.mvc.Result
 
 import scala.concurrent.{ExecutionContext, Future}
-import scalaz._, Scalaz._
+import scalaz._
+import Scalaz._
 import play.api.mvc.Results._
 import play.api.http.Status._
 
@@ -118,4 +119,14 @@ object CustomResponse extends CustomResponseTypes{
       },
       value =>
         Future.successful(value.right))
+
+  def errorResult(apiError: ApiError): Result = {
+    Status(apiError.code) {
+      JsObject(Seq(
+        "status" -> JsString("ERROR"),
+        "statusCode" -> JsNumber(apiError.code),
+        "error" -> Json.toJson(apiError.message),
+        "userMessage" -> Json.toJson(apiError.userMessage)))
+    }
+  }
 }

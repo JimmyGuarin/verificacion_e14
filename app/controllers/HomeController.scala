@@ -2,16 +2,19 @@ package controllers
 
 import javax.inject._
 
-import core.util.TwitterToken
-import play.api.{Configuration, Logger}
+import controllers.api.Secured
+import core.CustomResponse
+import daos.UsuarioDao
+import play.api.Configuration
 import play.api.db._
 import play.api.http.HttpErrorHandler
-import play.api.libs.json.Json
-import play.api.libs.ws.{EmptyBody, WSClient}
+import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, _}
+import services.LoginService
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
+import scalaz.Scalaz._
+import scalaz._
 
 
 /**
@@ -20,26 +23,11 @@ import scala.util.{Failure, Success}
  */
 @Singleton
 class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponents, assets: Assets,
-                                            config: Configuration, errorHandler: HttpErrorHandler,
-                                            wsClient: WSClient)(implicit executionContext: ExecutionContext) extends AbstractController(cc) {
+                                            val configuration: Configuration, errorHandler: HttpErrorHandler,
+                                            wsClient: WSClient, val loginService: LoginService,
+                                            val usuariosDao: UsuarioDao)(implicit val executionContext: ExecutionContext)
+  extends AbstractController(cc) with Secured{
 
-  import core.util.JsonFormats._
-  def version = Action {
-    var outString = "Number is "
-    val conn = db.getConnection()
-
-    try {
-      val stmt = conn.createStatement
-      val rs = stmt.executeQuery("SELECT 9 as testkey ")
-
-      while (rs.next()) {
-        outString += rs.getString("testkey")
-      }
-    } finally {
-      conn.close()
-    }
-    Ok(outString)
-  }
 
   def index = Action {
     Ok(views.html.index())
@@ -47,20 +35,17 @@ class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponen
 
   def reactApp: Action[AnyContent] = assets.at("index.html")
 
-  def assetOrDefault(resource: String): Action[AnyContent] = if (resource.startsWith(config.get[String]("apiPrefix"))){
+  def assetOrDefault(resource: String): Action[AnyContent] = if (resource.startsWith(configuration.get[String]("apiPrefix"))){
     Action.async(r => errorHandler.onClientError(r, NOT_FOUND, "Not found"))
   } else {
     if (resource.contains(".")) assets.at(resource) else index
   }
 
-  def appSummary = Action {
-    Ok(Json.obj("content" -> "Scala Play React Seed"))
-  }
 
   //Twitter stuff
-  val API_KEY = "j6uL99U6ha4MWfkFeDn9MBp4E"
-  val API_SECRET = "uDzej1FAg8F3fZy7bUH3NctCKquiH1ujFxodjIJ77Q1kgau2hM"
-  val CALLBACK_URL = "oob"
+//  val API_KEY = "j6uL99U6ha4MWfkFeDn9MBp4E"
+//  val API_SECRET = "uDzej1FAg8F3fZy7bUH3NctCKquiH1ujFxodjIJ77Q1kgau2hM"
+//  val CALLBACK_URL = "oob"
 
 
 //  def twitterRequestToken_ = Action {
@@ -87,4 +72,16 @@ class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponen
 //    Logger.debug(s"Token from Twitter $token")
 //    Ok(token)
 //  }
+
+
+  def signIn(code: String) = Action.async { implicit rs =>
+    val response = (for {
+      tokenResponse <- EitherT(loginService.connectWithGoogle(code))
+      userInfo <- EitherT(loginService.getUserInfo(tokenResponse.access_token))
+      usuario <- EitherT(loginService.getOrCreateUser(userInfo))
+    } yield {
+      authTokenResult(usuario)
+    }).run
+    response.map(_.fold(CustomResponse.errorResult, identity))
+  }
 }

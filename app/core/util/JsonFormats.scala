@@ -11,6 +11,12 @@ case class RespuestaCaptcha(success: Boolean)
 
 case class TwitterToken(oauth_token: String, oauth_token_secret: String)
 
+case class GTokenResponse(access_token: String, token_type: Option[String],
+                          expires_in: Option[Int], refresh_token: Option[String])
+
+case class GUserInfo(id: String, email: String, name: String)
+
+
 trait JsonFormats {
 
   implicit val E14Format = Json.format[E14]
@@ -23,6 +29,11 @@ trait JsonFormats {
   implicit val twitterTokenFormat = Json.format[TwitterToken]
 
   implicit val RespuestaCaptchaFormat = Json.format[RespuestaCaptcha]
+
+  implicit val gTokenResponseFormat = Json.format[GTokenResponse]
+
+  implicit val gUserInfo = Json.format[GUserInfo]
+
 }
 
 object JsonFormats extends JsonFormats {

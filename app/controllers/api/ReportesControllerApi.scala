@@ -4,10 +4,11 @@ import javax.inject.Singleton
 
 import core.CustomResponse
 import core.util.ReporteE14Json
-import daos.{CandidatoDao, DepartamentoDao, MunicipioDao}
+import daos.{CandidatoDao, DepartamentoDao, MunicipioDao, UsuarioDao}
 import models.{E14, Usuario}
-import play.api.mvc.{AbstractController, ControllerComponents}
-import services.ReportesService
+import play.api.Configuration
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
+import services.{LoginService, ReportesService}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scalaz.Scalaz._
@@ -16,22 +17,25 @@ import scalaz._
 @Singleton
 class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, reportesService: ReportesService,
                                                    candidatosDao: CandidatoDao, departamentoDao: DepartamentoDao,
-                                                   municipioDao: MunicipioDao)
-                                                  (implicit executionContext: ExecutionContext) extends AbstractController(cc) {
+                                                   municipioDao: MunicipioDao, val loginService: LoginService,
+                                                   val usuariosDao: UsuarioDao, val configuration: Configuration)
+                                                  (implicit val executionContext: ExecutionContext)
+  extends AbstractController(cc) with Secured{
 
   import core.util.JsonFormats._
 
-
   def getRandomE14 = Action.async { implicit rs =>
-    CustomResponse.asyncResultz {
-      val usuario = Usuario("test", Some(1)) //TODO
-      val result: EitherT[Future, CustomResponse.ApiError, E14] =
-        for {
-          e14 <- EitherT(reportesService.getRandomE14(usuario))
-        } yield {
-          e14
-        }
-      result.run
+    authenticated(rs){ usuarioRequest =>
+      CustomResponse.asyncResultz {
+        val usuario: Usuario = usuarioRequest.user
+        val result: EitherT[Future, CustomResponse.ApiError, E14] =
+          for {
+            e14 <- EitherT(reportesService.getRandomE14(usuario))
+          } yield {
+            e14
+          }
+        result.run
+      }
     }
   }
 
@@ -54,9 +58,8 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
   }
 
   def guardarReporte = Action.async(parse.json) { implicit rs =>
-
     CustomResponse.asyncResultz {
-      val usuario = Usuario("test", Some(1)) //TODO
+      val usuario: Usuario = null
       val result: EitherT[Future, CustomResponse.ApiError, String] =
         for {
           reporteJson <- EitherT(CustomResponse.jsonToResponseAsync(rs.body.validate[ReporteE14Json]))

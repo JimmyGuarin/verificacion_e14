@@ -5,8 +5,8 @@ import sbt.{AllPassFilter, PathFinder}
 
 import scala.sys.process.ProcessLogger
 
-name := """dream-commands"""
-organization := "dream-team"
+name := """e14_verification"""
+organization := "rysoft"
 
 version := "1.0-SNAPSHOT"
 
@@ -29,5 +29,7 @@ libraryDependencies ++= Seq(
 // Java
   "org.postgresql" % "postgresql" % "42.1.1",
   "org.webjars" % "swagger-ui" % "2.2.10",
-  "com.twitter" % "joauth" % "6.0.2"
+  "com.twitter" % "joauth" % "6.0.2",
+  //JWT
+  "com.pauldijou" %% "jwt-play" % "0.16.0"
 )
