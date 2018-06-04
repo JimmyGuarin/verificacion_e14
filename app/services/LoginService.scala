@@ -35,7 +35,8 @@ class LoginService @javax.inject.Inject()(wsClient: WSClient, configuration: Con
         "scope" -> Seq(gScope),
         "client_secret" -> Seq(gClientSecret),
         "grant_type" -> Seq(gGrantType),
-        "redirect_uri" -> Seq(gRedirectUri))
+        "redirect_uri" -> Seq(gRedirectUri)
+        )
       )
 
     tokenResponse.map { response =>

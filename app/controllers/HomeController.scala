@@ -23,14 +23,12 @@ import scalaz._
  */
 @Singleton
 class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponents, assets: Assets,
-                                            val configuration: Configuration, errorHandler: HttpErrorHandler,
-                                            wsClient: WSClient, val loginService: LoginService,
-                                            val usuariosDao: UsuarioDao)(implicit val executionContext: ExecutionContext)
-  extends AbstractController(cc) with Secured{
+                                            val configuration: Configuration, errorHandler: HttpErrorHandler)(implicit executionContext: ExecutionContext)
+  extends AbstractController(cc){
 
 
   def index = Action {
-    Ok(views.html.index())
+    Ok("")
   }
 
   def reactApp: Action[AnyContent] = assets.at("index.html")
@@ -41,14 +39,4 @@ class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponen
     if (resource.contains(".")) assets.at(resource) else index
   }
 
-  def signIn(code: String) = Action.async { implicit rs =>
-    val response = (for {
-      tokenResponse <- EitherT(loginService.connectWithGoogle(code))
-      userInfo <- EitherT(loginService.getUserInfo(tokenResponse.access_token))
-      usuario <- EitherT(loginService.getOrCreateUser(userInfo))
-    } yield {
-      authTokenResult(usuario)
-    }).run
-    response.map(_.fold(CustomResponse.errorResult, identity))
-  }
 }

@@ -45,8 +45,8 @@ trait Secured {
   protected def withAuthorizationToken(request: RequestHeader): Future[Option[Usuario]] = {
 
     val result: OptionT[Future, Usuario] = for {
-      userId <- OptionT(Future.apply( request.jwtSession.getAs[Int](TOKEN_ID)))
-      usuario <- OptionT(usuariosDao.usuarioPorId(userId))
+      userId <- OptionT(Future.apply( request.jwtSession.getAs[String](TOKEN_ID)))
+      usuario <- OptionT(usuariosDao.usuarioPorId(userId.toInt))
     } yield {
       usuario
     }
@@ -83,9 +83,10 @@ trait Secured {
   private def requestToJwtSession(request: RequestHeader): JwtSession = {
 
     val hn = request.headers.get(JwtSession.REQUEST_HEADER_NAME)
-
+    Logger.debug(s"requestToJwtSession $hn")
     val sh = hn.map(sanitizeHeader)
     val dh = sh.map(JwtSession.deserialize)
+    Logger.debug(s"requestToJwtSession $dh")
     dh.getOrElse(JwtSession())
   }
 
