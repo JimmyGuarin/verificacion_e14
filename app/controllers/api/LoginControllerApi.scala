@@ -8,7 +8,7 @@ import play.api.Configuration
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.LoginService
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scalaz.Scalaz._
 import scalaz._
 
@@ -28,5 +28,13 @@ class LoginControllerApi @javax.inject.Inject()(cc: ControllerComponents, val lo
       authTokenResult(usuario)
     }).run
     response.map(_.fold(CustomResponse.errorResult, identity))
+  }
+
+  def userInfo = Action.async { implicit rs =>
+    authenticated(rs){ userRequest =>
+      CustomResponse.asyncResultz{
+        Future.successful(userRequest.usuario.right)
+      }
+    }
   }
 }

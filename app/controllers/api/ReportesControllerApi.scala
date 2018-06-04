@@ -7,7 +7,7 @@ import core.util.ReporteE14Json
 import daos.{CandidatoDao, DepartamentoDao, MunicipioDao, UsuarioDao}
 import models.{E14, Usuario}
 import play.api.Configuration
-import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents}
 import services.{LoginService, ReportesService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,7 +55,7 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
     }
   }
 
-  def getCiudades = Action.async { implicit rs =>
+  def getMunicipios = Action.async { implicit rs =>
     authenticated(rs) { _ =>
       municipioDao
         .all()
