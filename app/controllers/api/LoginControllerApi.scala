@@ -18,6 +18,7 @@ class LoginControllerApi @javax.inject.Inject()(cc: ControllerComponents, val lo
                                                (implicit val executionContext: ExecutionContext)
   extends AbstractController(cc) with Secured{
 
+  import core.util.JsonFormats._
 
   def signIn(code: String) = Action.async { implicit rs =>
     val response = (for {
