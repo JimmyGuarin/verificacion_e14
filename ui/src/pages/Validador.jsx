@@ -10,27 +10,23 @@ import { Redirect } from 'react-router';
 
 import { Row, Col } from 'react-bootstrap';
 import MainContent from '../ui-components/MainContent';
+import withAuth from '../utils/withAuth';
 
-export default class Validar extends Component {
+export default class Validador extends Component {
   constructor(props) {
     super(props);
     this.state = {title: ''};
   }
 
   render() {
-
-    const redirect = false;
-    if (redirect) {
-      return (
-      <Router>
-        <Redirect to='/login'/>
-      </Router>);
-    } 
+    const { handleLogout } = this.props;
     return (
       <div className="App">
-        <h1>Verification E14</h1>
-        <MainContent />
+        <h1>Verificación E14</h1>
+        <MainContent handleLogout={handleLogout}/>
       </div>
     );
   }
+
 }
+

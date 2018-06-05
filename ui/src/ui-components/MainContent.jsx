@@ -18,6 +18,7 @@ export default class MainContent extends Component {
     this.sendToReport = this.sendToReport.bind(this);
     this.fetchE14 = this.fetchE14.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   sendToReport(candidates, captchaCode) {
@@ -57,29 +58,21 @@ export default class MainContent extends Component {
     console.log("Response", response);
   }
 
-  logout(data){
-    console.log("Logout success", data);
+  logout(){
+    console.log("Logout success");
   }
 
-
-//TODO CHANGE THE PDF LINK
   render() {
+    const { handleLogout } = this.props;
     console.log("render", this.e14File);
     return (
       this.state.loading ?
       <div>
         <h1>CARGANDO...</h1>
-        <GoogleLogin
-                    clientId="188546035076-p80fv1c9d35a6ra3ogeu6k0n03836v2a.apps.googleusercontent.com"
-                    buttonText="Login"
-                    responseType='code'
-                    onSuccess={this.responseGoogle}
-                    onFailure={this.responseGoogle} />
         <GoogleLogout
-              buttonText="Logout"
-              onLogoutSuccess={this.logout}
-            >
-            </GoogleLogout>
+          buttonText="Logout"
+          onLogoutSuccess={this.logout}
+        />
       </div>
       :
       <div>

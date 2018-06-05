@@ -1,3 +1,6 @@
+import { getToken } from '../services/AuthService';
+
+
 const COMMON_FETCH_OPTIONS = {
   credentials: 'same-origin',
 };
@@ -55,6 +58,7 @@ export function rawAPIFetch(url: string, method: fetch.MethodType, content: ?(st
     if (content !== undefined) {
       headers.set('Content-Type', 'application/json');
     }
+    headers.set( 'Authorization', getToken());
   
     let request = new Request(url,
     {

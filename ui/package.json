@@ -11,14 +11,15 @@
   "proxy": "http://localhost:9000",
   "dependencies": {
     "bootstrap": "^4.1.1",
+    "jwt-decode": "^2.2.0",
     "react": "^16.2.0",
     "react-async-script": "^0.9.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.2.0",
     "react-google-login": "^3.2.1",
-    "react-scripts": "1.0.17",
     "react-google-recaptcha": "^0.11.1",
-    "react-iframe": "^1.1.0"
+    "react-iframe": "^1.1.0",
+    "react-scripts": "1.0.17"
   },
   "devDependencies": {
     "ncp": "^2.0.0",
