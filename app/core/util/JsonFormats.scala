@@ -16,6 +16,11 @@ case class GTokenResponse(access_token: String, token_type: Option[String],
 
 case class GUserInfo(id: String, email: String, name: String)
 
+case class VotosReportadosCount(cantReportes: Int,  reportes: Seq[(ReporteE14, DetalleReporteSospechoso)])
+
+case class DetallesGroupedByVotos(votosReportados: Int, reportesDetalles: VotosReportadosCount, votosReportadosDetalle: Map[Int, VotosReportadosCount])
+
+case class ResumenSumatoria(resumen:  Map[Candidato, Int], detalles: Map[E14, Map[Candidato, DetallesGroupedByVotos]])
 
 trait JsonFormats {
 
@@ -26,16 +31,17 @@ trait JsonFormats {
   implicit val DeptoFormat = Json.format[Departamento]
   implicit val MunicipioFormat = Json.format[Municipio]
 
+
   implicit val twitterTokenFormat = Json.format[TwitterToken]
-
   implicit val RespuestaCaptchaFormat = Json.format[RespuestaCaptcha]
-
   implicit val gTokenResponseFormat = Json.format[GTokenResponse]
-
   implicit val gUserInfo = Json.format[GUserInfo]
-
   implicit val usuarioFormat = Json.format[Usuario]
 
+  implicit val votosReportadosCount = Json.format[VotosReportadosCount]
+  implicit val detallesGroupedByVotos = Json.format[DetallesGroupedByVotos]
+
+  implicit val resumenSumatoria = Json.format[ResumenSumatoria]
 }
 
 object JsonFormats extends JsonFormats {

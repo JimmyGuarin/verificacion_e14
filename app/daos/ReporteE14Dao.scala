@@ -3,19 +3,18 @@ package daos
 import javax.inject.Inject
 
 import core.CustomResponse.ApiResponsez
-import models.{E14, ReporteE14}
+import models.{DetalleReporteSospechoso, E14, ReporteE14}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import scalaz._
 import Scalaz._
 
-class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, detalleDao: DetalleReporteSospechosoDao)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
 
-  private val reportesE14Table = TableQuery[ReportesE14Table]
+  private[daos] val reportesE14Table = TableQuery[ReportesE14Table]
 
   def all(): Future[Seq[ReporteE14]] = db.run(reportesE14Table.result)
 
@@ -24,11 +23,22 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
     db.run(result).map(_.headOption)
   }
 
+  def reportesInvalidosConDetalles: Future[scala.Seq[(ReporteE14, DetalleReporteSospechoso)]] = {
+    //TODO check that join works
+    val joinResult = for {
+      reporteInvalido <- reportesE14Table.filter(_.valido === true)
+//      (reporte, detalle) <- novalidos join detalleDao.detallesReporteSospechosoTable on (_.id === _.reporteId)
+      detalle <- detalleDao.detallesReporteSospechosoTable if reporteInvalido.id === detalle.reporteId
+    } yield {
+      (reporteInvalido, detalle)
+    }
+    db.run(joinResult.result)
+  }
+
   private val insertQuery = reportesE14Table returning reportesE14Table.map(_.id) into ((item, id) => item.copy(id = Some(id)))
 
   def guardarReporte(reporteE14: ReporteE14): Future[ReporteE14] = {
     db.run(insertQuery += reporteE14)
-    //TODO
   }
 
   def totalReportesPorUsuario(usuarioId: Int): Future[Int] = {
@@ -36,7 +46,7 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
     db.run(result)
   }
 
-  private class ReportesE14Table(tag: Tag) extends Table[ReporteE14](tag, "reporte_e14") {
+  private[daos] class ReportesE14Table(tag: Tag) extends Table[ReporteE14](tag, "reporte_e14") {
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)
     def e14Id = column[Int]("e14_id")
     def usuarioId = column[Int]("usuario_id")

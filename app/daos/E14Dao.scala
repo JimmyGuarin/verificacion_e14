@@ -8,7 +8,7 @@ import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-class E14Dao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+class E14Dao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider, reportesDao: ReporteE14Dao)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
 
   private val E14Table = TableQuery[E14Table]
@@ -24,6 +24,15 @@ class E14Dao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
   def getById(e14Id: Int):  Future[Option[E14]] = {
     val result = E14Table.filter(_.id === e14Id).result
     db.run(result).map(_.headOption)
+  }
+
+  def e14ConReportesInvalidos: Future[Seq[E14]] = {
+    val result = for {
+      (e14, _) <- (E14Table join reportesDao.reportesE14Table).filter(_._2.valido)
+    } yield {
+      e14
+    }
+    db.run(result.result)
   }
 
   private class E14Table(tag: Tag) extends Table[E14](tag, "e14") {

@@ -23,6 +23,7 @@ libraryDependencies ++= Seq(
   guice,
   ws,
   jdbc,
+  ehcache,
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "com.typesafe.play" %% "play-slick" % "3.0.1",
   "org.scalaz" %% "scalaz-core" % "7.2.23",

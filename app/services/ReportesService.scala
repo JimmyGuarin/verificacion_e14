@@ -2,11 +2,13 @@ package services
 
 import javax.inject.Singleton
 
+import akka.actor.ActorSystem
 import core.CustomResponse
 import core.CustomResponse.{ApiResponsez, _}
-import core.util.{DetalleReporteJson, ReporteE14Json, RespuestaCaptcha}
-import daos.{DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
+import core.util._
+import daos.{CandidatoDao, DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
 import models._
+import play.api.cache.AsyncCacheApi
 import play.api.http.Status
 import play.api.libs.ws.WSClient
 
@@ -16,16 +18,39 @@ import scala.util.Random
 import scalaz.Scalaz._
 import scalaz._
 
+import scala.concurrent.duration._
+
+
+
+case class CandVotoGroup(candId: Int, votos: Int)
+case class DetallesCount(repetidosCount: Int, detalles:  Seq[(ReporteE14, DetalleReporteSospechoso)])
+case class AgrupadoModa(candVotoGroup: CandVotoGroup, detallesCount: DetallesCount, todosGoups: Map[CandVotoGroup, DetallesCount])
+
+
+
+
+
+
 @Singleton
 class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
                                              wsClient: WSClient,
+                                             candidatoDao: CandidatoDao,
                                              reporteE14Dao: ReporteE14Dao,
-                                             detalleReporteDao: DetalleReporteSospechosoDao)(
+                                             detalleReporteDao: DetalleReporteSospechosoDao,
+                                             cache: AsyncCacheApi,
+                                             actorSystem: ActorSystem)(
                                               implicit executionContext: ExecutionContext) {
 
   import core.util.JsonFormats._
 
   val random = new Random()
+
+  private val estadisticasCacheKey = "estadisticas"
+
+  val estadisticasJob = actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 1.minute) {
+//    cache.remove(estadisticasCacheKey)
+    votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
+  }
 
   def getRandomE14(usuario: Usuario): Future[ApiResponsez[E14]] = {
 
@@ -105,6 +130,77 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       }).getOrElse(
         Future.apply(ApiError(400, "", "").left)
       )
+    }
+  }
+
+
+
+
+  def estadisticas() = {
+    val agrupadoPorE14 = reporteE14Dao.reportesInvalidosConDetalles.map { todosSeq =>
+      todosSeq
+        .groupBy(_._1.e4Id)
+    }
+
+    agrupadoPorE14.map { agrupados =>
+      agrupados.map{ case (e14Id, reportes) =>
+          val agrupadoCandVoto = reportes
+            .groupBy{case (_, detalles) => (detalles.candidatoId, detalles.votosSospechoso)}
+            .map{ case((candidatoId, votos), detalles) => (CandVotoGroup(candidatoId, votos), DetallesCount(detalles.size, detalles)) }
+          val agrupadoCandVotoModa = agrupadoCandVoto.maxBy{case (key, value) => value.repetidosCount}
+        (e14Id, AgrupadoModa(agrupadoCandVotoModa._1, agrupadoCandVotoModa._2, agrupadoCandVoto))
+      }
+    }
+
+  }
+
+  def estadisticasFromCache: Future[ResumenSumatoria] = {
+    cache.getOrElseUpdate(estadisticasCacheKey){
+      votosReportadosByCandidato
+    }
+  }
+
+  def agrupadosPorCandidatoYVoto: Future[Map[E14, Map[Candidato, DetallesGroupedByVotos]]]  = {
+    val agrupadoPorE14 = reporteE14Dao.reportesInvalidosConDetalles.map(_.groupBy(_._1.e4Id))
+
+    for {
+      candidatos <- candidatoDao.all()
+      e14ConReportesInvalidos <- e14Dao.e14ConReportesInvalidos
+      agrupados <- agrupadoPorE14
+    } yield {
+      val candidatosMap = candidatos.map(c => (c.id.get, c)).toMap
+      val e14ConReportesInvalidosMap = e14ConReportesInvalidos.map(e => (e.id.get, e)).toMap
+      agrupados.map { case (e14Id, reportes) =>
+        val groupByCandidato = reportes.groupBy{case(_, detalle) => detalle.candidatoId}
+        val groupByCandidatoYVotos = groupByCandidato.map{case (candId, reportesDetalle) =>
+          val detallesGroupedByVotos = reportesDetalle.groupBy{case(_, det) => det.votosSospechoso}
+          val detallesGroupedByVotosConteo = detallesGroupedByVotos.map{case (votosSospechosos, seqReportes) =>
+            (votosSospechosos, VotosReportadosCount(seqReportes.size, seqReportes))
+          }
+          val detallesGroupedByVotosModa = detallesGroupedByVotosConteo.maxBy(_._1)
+
+          val candidato = candidatosMap.get(candId).getOrElse(Candidato("Candidato no encontrado"))
+
+          (candidato, DetallesGroupedByVotos(detallesGroupedByVotosModa._1, detallesGroupedByVotosModa._2, detallesGroupedByVotosConteo))
+        }
+        val e14 = e14ConReportesInvalidosMap.get(e14Id).get
+        (e14, groupByCandidatoYVotos)
+      }
+    }
+  }
+
+  def votosReportadosByCandidato :  Future[ResumenSumatoria]= {
+
+    for {
+      candidatos <- candidatoDao.all()
+      data <- agrupadosPorCandidatoYVoto
+    } yield {
+      val zero = candidatos.map(c => (c, 0)).toMap
+      val sumaPorCandidato = data.foldLeft(zero){ case (acc, (e14, porCandidato)) =>
+        val conVotos = porCandidato.map{ case (k, v) => (k, v.votosReportados) }
+        acc |+| conVotos
+      }
+      ResumenSumatoria(sumaPorCandidato, data)
     }
   }
 }

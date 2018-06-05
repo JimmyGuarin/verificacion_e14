@@ -15,14 +15,14 @@ import Scalaz._
 class DetalleReporteSospechosoDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
 
-  private val detallesReporteSospechosoTable = TableQuery[DetallesReporteSospechosoTable]
+  private[daos] val detallesReporteSospechosoTable = TableQuery[DetallesReporteSospechosoTable]
 
   def all(): Future[Seq[DetalleReporteSospechoso]] = db.run(detallesReporteSospechosoTable .result)
 
   def guardarDetalle(detalleReporte: DetalleReporteSospechoso): Future[ApiResponsez[String]] = db.run(detallesReporteSospechosoTable += detalleReporte).map { _ => "Guardado correctamente".right }
 
 
-  private class DetallesReporteSospechosoTable(tag: Tag) extends Table[DetalleReporteSospechoso](tag, "detalle_reporte_sospechoso") {
+  private[daos] class DetallesReporteSospechosoTable(tag: Tag) extends Table[DetalleReporteSospechoso](tag, "detalle_reporte_sospechoso") {
 
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)
     def reporteId = column[Int]("reporte_id")
