@@ -30,13 +30,13 @@ class E14Dao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
 
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)
     def link = column[String]("link")
-    def mesa = column[String]("mesa")
+    //def mesa = column[String]("mesa")
     def departamento = column[String]("departamento")
     def municipio = column[String]("municipio")
     def zona = column[String]("zona")
     def puesto= column[String]("zona")
 
 
-    def * = (link, mesa, departamento, municipio, zona, puesto, id.?) <> (E14.tupled, E14.unapply)
+    def * = (link, /*mesa,*/ departamento, municipio, zona, puesto, id.?) <> (E14.tupled, E14.unapply)
   }
 }
