@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { Row, Col, Button, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Alert, Label } from 'react-bootstrap';
 import ContentActions from './ContentActions';
 import IframeComponent from './IframeComponent';
 import { getNewE14, sendReport } from "../webapi/endpoints";
+import E14Info from '../ui-components/E14Info';
 
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
@@ -22,14 +23,13 @@ export default class MainContent extends Component {
   }
 
   sendToReport(candidates, captchaCode) {
-    //senddata
     this.setState({loading: true});
     let data = {
       e14Id: this.e14File.id,
       valido: true,
       detalles: candidates
     };
-    if (candidates) {
+    if (captchaCode) {
       data.valido = false;
       data.captchaToken = captchaCode;
     }
@@ -38,15 +38,17 @@ export default class MainContent extends Component {
       this.fetchE14();
     },
     res => {
-      console.log(res);
       this.setState({sendFail: true, loading: false});
     });
   }
 
   fetchE14() {
+    const { getInfoUbicacion } = this.props;
     getNewE14().then(res => {
       this.e14File  = res.response;
+      this.ubicacion = getInfoUbicacion(this.e14File.departamento, this.e14File.municipio);
       this.setState({loading: false});
+      
     });
   }
 
@@ -55,24 +57,17 @@ export default class MainContent extends Component {
   }
 
   responseGoogle(response) {
-    console.log("Response", response);
   }
 
   logout(){
-    console.log("Logout success");
   }
 
   render() {
     const { handleLogout } = this.props;
-    console.log("render", this.e14File);
     return (
       this.state.loading ?
       <div>
         <h1>CARGANDO...</h1>
-        <GoogleLogout
-          buttonText="Logout"
-          onLogoutSuccess={this.logout}
-        />
       </div>
       :
       <div>
@@ -90,12 +85,18 @@ export default class MainContent extends Component {
           : null
           }
         </div>
-        <div>
-          <IframeComponent
-            link={this.e14File.link}/>
-        </div>
+        <E14Info 
+          departamento={this.ubicacion.nombreDepto}
+          municipio={this.ubicacion.nombreMun}
+          zona={this.e14File.zona}
+          puesto={this.e14File.puesto}
+        />
         <Row>
-          <Col xsOffset={6} xs={6} md={6}>
+        <Col xs={6} md={6}>
+          <IframeComponent
+            link={this.e14File.link}/>  
+          </Col>
+          <Col xs={6} md={6}>
             <ContentActions
               sendReport= {this.sendToReport}/>
           </Col>

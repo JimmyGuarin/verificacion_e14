@@ -6,7 +6,7 @@ case class Usuario(googleId: String, email: String, name: String,  id: Option[In
 
 case class Departamento(nombre: String, codigo: String, id: Option[Int] = None)
 
-case class Municipio(idDepto: Int, nombre: String, codigo: String, id: Option[Int] = None)
+case class Municipio(codigoDepto: String, nombre: String, codigo: String, id: Option[Int] = None)
 
 case class Candidato(nombre: String, id: Option[Int] = None)
 

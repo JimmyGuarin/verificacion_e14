@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import _ from 'lodash';
 import {
   BrowserRouter as Router,
   Route,
@@ -8,25 +8,52 @@ import {
 
 import { Redirect } from 'react-router';
 
-import { Row, Col } from 'react-bootstrap';
+ 
 import MainContent from '../ui-components/MainContent';
+import NavigationBar from '../ui-components/NavigationBar';
 import withAuth from '../utils/withAuth';
+import withNavBar from '../utils/withNavbar';
+import { getDepartamentos, getMunicipios} from '../webapi/endpoints';
 
-export default class Validador extends Component {
+class Validador extends Component {
   constructor(props) {
     super(props);
-    this.state = {title: ''};
+    this.state = {loading: true};
+    this.getInfoUbicacion = this.getInfoUbicacion.bind(this);
   }
 
   render() {
-    const { handleLogout } = this.props;
     return (
+      this.state.loading ?
+      <h1>Cargando información de Departamentos</h1>
+      :
       <div className="App">
         <h1>Verificación E14</h1>
-        <MainContent handleLogout={handleLogout}/>
+        <MainContent getInfoUbicacion={this.getInfoUbicacion}/>
       </div>
     );
   }
 
+  getInfoUbicacion(codDepto, codMun) {
+    return ({
+      nombreDepto: this.departamentos[codDepto].nombre,
+      nombreMun: this.municipios[codDepto] ? 
+      this.municipios[codDepto][codMun].nombre : ""
+    });
+  }
+
+  componentWillMount() {
+    getDepartamentos().then(res => {
+       this.departamentos = _.keyBy(res.response, 'codigo');
+      getMunicipios().then(res => {
+         this.municipios = _.mapValues(_.groupBy(res.response, 'codigoDepto'), (seq) => {
+          return _.keyBy(seq, 'codigo');
+        });
+        this.setState({loading: false});
+      });
+    });
+  }
 }
+
+export default withNavBar(Validador);
 
