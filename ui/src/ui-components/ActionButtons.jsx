@@ -6,14 +6,22 @@ export default class ActionButtons extends Component {
   render() {
     const { handleSucess, handleFraud } = this.props;
     return (
-      <Row>
-        <Button bsStyle="success" onClick={handleSucess} bsSize="large">
-          Limpio
-        </Button>
-        <Button bsStyle="danger" onClick={handleFraud} bsSize="large">
-          Sospechoso
-        </Button>
-      </Row>
+      <div>
+        <Row>
+          <Col xs={2}>
+            <Button className="buttons-action" bsStyle="success" onClick={handleSucess} bsSize="large">
+              Limpio
+            </Button>
+          </Col> 
+        </Row>  
+        <Row>
+          <Col xs={2}>
+            <Button className="buttons-action" bsStyle="danger" onClick={handleFraud} bsSize="large">
+              Sospechoso
+            </Button>
+          </Col>  
+        </Row>  
+      </div>
     );
   }
 }

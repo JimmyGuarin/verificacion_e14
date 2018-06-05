@@ -18,8 +18,10 @@ export default class CandidatesSelected extends Component {
   }
 
   tryToSend() {
-    const { onSend } = this.props;
-    if (this.captcha) {
+    const { onSend, candidatesAdded } = this.props;
+    if (candidatesAdded.length <= 0){
+      alert("No se han agregado candidatos");
+    } else if (this.captcha) {
       onSend(this.captcha);
     } else {
       alert("Completa el captcha");

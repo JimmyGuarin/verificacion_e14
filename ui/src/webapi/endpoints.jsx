@@ -17,6 +17,24 @@ export function getNewE14() {
   })
 }
 
+export function getUserInfo() {
+  return get(apiRoot + '/userInfo', {
+    accept: "application/json"
+  })
+}
+
+export function getDepartamentos() {
+  return get(apiRoot + '/departamentos', {
+    accept: "application/json"
+  })
+}
+
+export function getMunicipios() {
+  return get(apiRoot + '/municipios', {
+    accept: "application/json"
+  })
+}
+
 export function getCandidates() {
   return get(apiRoot + '/candidates', {
     accept: "application/json"

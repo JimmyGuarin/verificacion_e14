@@ -1,20 +1,54 @@
 import React, {Component} from 'react';
 import Iframe from 'react-iframe';
+import { Row, Col, Button } from 'react-bootstrap';
 
 export default class IframeComponent extends Component {
 
+  constructor(props) {
+    super(props);
+    this.openExternal = this.openExternal.bind(this);
+    this.modalWindows = null;
+  }
   
+  openExternal() {
+    const { link } = this.props;
+    this.modalWindows = window.open(link, "", "width=500,height=500");
+  }
+
+
+  componentWillUnmount() {
+   if(this.modalWindows) {
+    console.log("close");
+    this.modalWindows.close();
+   }
+     
+  }
 
 
   render() {
     const { link } = this.props;
+   
     return (
-        <Iframe url={link}
-        position="absolute"
-        width="50%"
-        height="450px"
-        id="myId"
-        className="myClassname"/>
+      <div>
+        <Row>
+          <Col xsOffset={4} xs={4}>
+           <Button bsStyle="link" onClick={this.openExternal}>Abrir en otra ventana</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+              <Iframe url={link}
+            position="absolute"
+            width="100%"
+            height="450px"
+            id="myId"
+            className="myClassname"/>
+            <div style={{marginTop: '200px'}}>
+              <a href={link} target="_blank">Vista previa no disponible</a>
+            </div>
+          </Col>
+        </Row>   
+      </div> 
     );
   }
 }

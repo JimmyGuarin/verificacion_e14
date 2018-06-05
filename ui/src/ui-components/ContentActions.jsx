@@ -18,7 +18,7 @@ export default class ContentActions extends Component {
   
   handleSucess = () => {
     const { sendReport} = this.props;
-    sendReport([]);
+    sendReport([], null);
   }
 
   handleFraud = () => {
