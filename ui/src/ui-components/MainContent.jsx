@@ -4,7 +4,7 @@ import ContentActions from './ContentActions';
 import IframeComponent from './IframeComponent';
 import { getNewE14, sendReport } from "../webapi/endpoints";
 
-import GoogleLogin from 'react-google-login';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
 export default class MainContent extends Component {
   constructor(props) {
@@ -57,6 +57,10 @@ export default class MainContent extends Component {
     console.log("Response", response);
   }
 
+  logout(data){
+    console.log("Logout success", data);
+  }
+
 
 //TODO CHANGE THE PDF LINK
   render() {
@@ -68,9 +72,14 @@ export default class MainContent extends Component {
         <GoogleLogin
                     clientId="188546035076-p80fv1c9d35a6ra3ogeu6k0n03836v2a.apps.googleusercontent.com"
                     buttonText="Login"
-                    accessType="online"
+                    responseType='code'
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle} />
+        <GoogleLogout
+              buttonText="Logout"
+              onLogoutSuccess={this.logout}
+            >
+            </GoogleLogout>
       </div>
       :
       <div>

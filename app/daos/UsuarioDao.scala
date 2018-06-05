@@ -36,7 +36,7 @@ class UsuarioDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvide
     )
   }
 
-  private class UsuariosTable(tag: Tag) extends Table[Usuario](tag, "usuarios") {
+  private class UsuariosTable(tag: Tag) extends Table[Usuario](tag, "usuario") {
 
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)
     def googleId = column[String]("google_id")

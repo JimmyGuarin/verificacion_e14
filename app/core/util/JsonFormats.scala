@@ -34,6 +34,8 @@ trait JsonFormats {
 
   implicit val gUserInfo = Json.format[GUserInfo]
 
+  implicit val usuarioFormat = Json.format[Usuario]
+
 }
 
 object JsonFormats extends JsonFormats {
