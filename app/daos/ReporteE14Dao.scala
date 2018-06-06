@@ -65,6 +65,13 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
       .result)
   }
 
+  def totalVerificados: Future[Int] = {
+    db.run(reportesE14Table
+      .distinctOn(_.e14Id)
+      .length
+      .result)
+  }
+
   private[daos] class ReportesE14Table(tag: Tag) extends Table[ReporteE14](tag, "reporte_e14") {
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)
     def e14Id = column[Int]("e14_id")

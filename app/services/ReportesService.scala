@@ -47,6 +47,9 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
   private val estadisticasCacheKey = "estadisticas"
 
+  private val porcentajeVerificado = "porcentaje_verificado"
+
+
 //  val estadisticasJob = actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 1.minute) {
 ////    cache.remove(estadisticasCacheKey)
 //    votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
@@ -175,8 +178,23 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
   }
 
+  private def porcentajeE14Verificado: Future[Double] = {
+    for{
+      totalE14 <- e14Dao.totalRegistros()
+      totalVerificados <- reporteE14Dao.totalVerificados
+    } yield {
+      totalVerificados.toDouble / totalE14.toDouble
+    }
+  }
+
+  def porcentajeE14VerificadoFromCache: Future[Double] = {
+    cache.getOrElseUpdate(porcentajeVerificado, 1.minute){
+      porcentajeE14Verificado
+    }
+  }
+
   def estadisticasFromCache: Future[ResumenSumatoria] = {
-    cache.getOrElseUpdate(estadisticasCacheKey){
+    cache.getOrElseUpdate(estadisticasCacheKey, 5.minutes){
       votosReportadosByCandidato
     }
   }

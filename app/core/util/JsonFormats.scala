@@ -28,6 +28,8 @@ case class StatsDetalleCandidato(candidato: Candidato, detalle: DetallesGroupedB
 case class StatsDetallesE14(e14: E14, statsDetalleCandidato: Seq[StatsDetalleCandidato])
 case class ResumenSumatoria(resumen:  Seq[StatsResumenCandidato], detalles: Seq[StatsDetallesE14])
 
+case class TotalVerificados(verificados: Double)
+
 trait JsonFormats {
 
   implicit val E14Format = Json.format[E14]
@@ -61,6 +63,8 @@ trait JsonFormats {
   implicit val statsDetallesE14 = Json.format[StatsDetallesE14]
 
   implicit val resumenSumatoria = Json.format[ResumenSumatoria]
+
+  implicit val totalVerificados = Json.format[TotalVerificados]
 }
 
 object JsonFormats extends JsonFormats {

@@ -1,8 +1,9 @@
 package controllers.api
 
 import javax.inject.Singleton
+
 import core.CustomResponse
-import core.util.ReporteE14Json
+import core.util.{ReporteE14Json, TotalVerificados}
 import daos.{CandidatoDao, DepartamentoDao, MunicipioDao, UsuarioDao}
 import models.{E14, E14Encript, Usuario}
 import play.api.Configuration
@@ -76,6 +77,22 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
           }
         result.run
       }
+    }
+  }
+
+  def statsPorcentajeVerificados = Action.async { implicit rs =>
+    CustomResponse.asyncResultz {
+      reportesService
+        .porcentajeE14VerificadoFromCache
+        .map(v => TotalVerificados(v).right)
+    }
+  }
+
+  def statsSumatoriaResumen = Action.async { implicit rs =>
+    CustomResponse.asyncResultz {
+      reportesService
+        .estadisticasFromCache
+        .map(_.right)
     }
   }
 

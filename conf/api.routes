@@ -11,3 +11,7 @@ POST    /saveReport         controllers.api.ReportesControllerApi.guardarReporte
 POST    /signin             controllers.api.LoginControllerApi.signIn(code: String)
 
 GET     /userInfo           controllers.api.LoginControllerApi.userInfo
+
+GET     /stats/porcentaje   controllers.api.ReportesControllerApi.statsPorcentajeVerificados
+
+GET     /stats/resumen      controllers.api.ReportesControllerApi.statsSumatoriaResumen
