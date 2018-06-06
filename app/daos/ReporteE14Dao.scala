@@ -45,10 +45,10 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
 
   def statsUsuario(usuario: Usuario): Future[(Int, Int)] = {
     val totalReportesQuery = reportesE14Table.filter(_.usuarioId === usuario.id.get)
-    val sospechososQuery = totalReportesQuery.filter(_.valido)
+    val sospechososQuery = totalReportesQuery.filter(_.valido === false)
 
-    val totalReportes = db.run(totalReportesQuery.size.result)
-    val reportesSospechosos = db.run(sospechososQuery.size.result)
+    val totalReportes = db.run(totalReportesQuery.length.result)
+    val reportesSospechosos = db.run(sospechososQuery.length.result)
 
     for {
       total <- totalReportes

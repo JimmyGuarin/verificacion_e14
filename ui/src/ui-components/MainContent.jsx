@@ -4,6 +4,7 @@ import ContentActions from './ContentActions';
 import IframeComponent from './IframeComponent';
 import { getNewE14, sendReport } from "../webapi/endpoints";
 import E14Info from '../ui-components/E14Info';
+import VerificacionUserInfo from '../ui-components/VerificacionUserInfo';
 
 export default class MainContent extends Component {
   constructor(props) {
@@ -17,11 +18,11 @@ export default class MainContent extends Component {
     this.sendToReport = this.sendToReport.bind(this);
     this.fetchE14 = this.fetchE14.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
-    this.logout = this.logout.bind(this);
   }
 
   sendToReport(candidates, captchaCode) {
     this.setState({loading: true});
+    const { updateUserInfo, userInfo } = this.props;
     let data = {
       e14Id: this.e14File.id,
       valido: true,
@@ -33,6 +34,10 @@ export default class MainContent extends Component {
     }
     sendReport(data).then(res => {
       this.setState({sendOk: true});
+      userInfo.reportes+=1;
+      if (captchaCode)
+        userInfo.sospechosos+=1;
+        updateUserInfo(userInfo);
       this.fetchE14();
     },
     res => {
@@ -52,12 +57,6 @@ export default class MainContent extends Component {
 
   handleDismiss() {
     this.setState({sendOk: false, sendFail: false});
-  }
-
-  responseGoogle(response) {
-  }
-
-  logout(){
   }
 
   render() {
@@ -82,12 +81,18 @@ export default class MainContent extends Component {
           : null
           }
         </div>
-        <E14Info 
-          departamento={this.ubicacion.nombreDepto}
-          municipio={this.ubicacion.nombreMun}
-          zona={this.e14File.zona}
-          puesto={this.e14File.puesto}
-        />
+        <Row>
+          <hr/>
+          <Col xs={12}>
+            <E14Info 
+              departamento={this.ubicacion.nombreDepto}
+              municipio={this.ubicacion.nombreMun}
+              zona={this.e14File.zona}
+              puesto={this.e14File.puesto}
+            />
+          </Col>
+        </Row>
+        <hr/>
         <Row>
         <Col xs={6} md={6}>
           <IframeComponent
@@ -97,6 +102,9 @@ export default class MainContent extends Component {
             <ContentActions
               sendReport= {this.sendToReport}/>
           </Col>
+        </Row>
+        <Row>
+          test
         </Row>
       </div>
     );

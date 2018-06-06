@@ -32,7 +32,6 @@ export default class CandidatesSelected extends Component {
     const { candidatesAdded, onCancel } = this.props;  
     return (
       <div>
-        <h3>Candidatos Agregados</h3>
         <Table bordered condensed>
           <thead className="thead-dark">
             <tr>
@@ -57,20 +56,21 @@ export default class CandidatesSelected extends Component {
           sitekey="6Ld9zlwUAAAAAOgvixsDnQsvIbguqleE05LwHSG5"
           onChange={this.handleReCaptcha}
         />
-        <hr/>
+        <br/>
         </div>
         <Row>
-          <Col xsOffset={4} xs={2}>
+          <Col xsOffset={2} xs={4}>
             <Button bsStyle="success" onClick={this.tryToSend} id="someButton">
-              Enviar
+              Enviar Verificación
             </Button>
           </Col>
-          <Col xs={2}>
+          <Col xs={4}>
             <Button bsStyle="danger" onClick={onCancel} id="someButton">
-              Cancelar
+              Cancelar Verificación
             </Button>
-          </Col>
+          </Col>  
         </Row>
+        <br/>
       </div>
     );
       

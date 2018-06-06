@@ -30,21 +30,33 @@ export default class Login extends Component {
     return (
       <div>
         <Row>
-          <Col xsOffset={4} xs={3} md={4}>
+          <Col xsOffset={2} mdOffset={4} xs={8} md={4}>
             <h1 align="center">Verificación E14</h1>
           </Col>
         </Row>
-        <div>
-        <img  width="450" height="300"  src={loginLogo} alt="Scala Logo" />
-        </div>
+        <br/>
         <Row>
-          <Col xsOffset={5} xs={2} md={4}>
+          <Col xsOffset={2} mdOffset={4} xs={8} md={4}>
+            <img  width="100%" height="auto"  src={loginLogo} alt="Scala Logo" />
+          </Col>
+        </Row> 
+        <br/> 
+        <Row>
+          <Col xsOffset={4} mdOffset={5} xs={4} md={2} className="container-button-login">
           <GoogleLogin
             clientId="657340641723-3anqvj67ckk4pf8ju9f8no0hapcddpdr.apps.googleusercontent.com"
             buttonText="Login"
             responseType='code'
             onSuccess={this.responseGoogle}
             onFailure={this.responseGoogle} /> 
+          </Col>
+        </Row>
+        <br/>
+        <Row>
+          <Col xsOffset={2} mdOffset={4} xs={8} md={4}>
+            <h4 align="center">
+              Powered by <a target="__blank"href="http://rysoft.tech/">rysoft.tech</a>
+            </h4>
           </Col>
         </Row>
       </div>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Col, Button, FormGroup, Form, 
+import { Row, Col, Button, FormGroup, Form, 
     ControlLabel, FormControl  } from 'react-bootstrap';
 
 export default class SelectCandidate extends Component { 
@@ -85,13 +85,16 @@ export default class SelectCandidate extends Component {
               value={this.state.voteValue}  
               onChange={this.handleChangeVotes}
               placeholder="100"/> 
-        </Col>
-        <Col sm={3}>
+        </Col>     
+      </FormGroup>
+      <Row>
+        <Col xsOffset= {4} sm={4}>
             <Button bsStyle="success"  onClick={this.sendSelected}>
-              Agregar
+              Agregar Candidato
             </Button>
-        </Col>          
-      </FormGroup>`
+        </Col> 
+      </Row>
+      <br/>
     </Form>);
   }
 
