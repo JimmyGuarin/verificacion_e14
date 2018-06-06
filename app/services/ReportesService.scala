@@ -138,9 +138,6 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     }
   }
 
-
-
-
   def estadisticas() = {
     val agrupadoPorE14 = reporteE14Dao.reportesInvalidosConDetalles.map { todosSeq =>
       todosSeq
@@ -180,13 +177,13 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
         val groupByCandidatoYVotos = groupByCandidato.map{case (candId, reportesDetalle) =>
           val detallesGroupedByVotos = reportesDetalle.groupBy{case(_, det) => det.votosSospechoso}
           val detallesGroupedByVotosConteo = detallesGroupedByVotos.map{case (votosSospechosos, seqReportes) =>
-            (votosSospechosos, VotosReportadosCount(seqReportes.size, seqReportes))
+            (votosSospechosos, VotosReportadosCount(seqReportes.size, seqReportes.map(DetalleReporteStats.tupled)))
           }
           val detallesGroupedByVotosModa = detallesGroupedByVotosConteo.maxBy(_._1)
 
           val candidato = candidatosMap.get(candId).getOrElse(Candidato("Candidato no encontrado"))
 
-          (candidato, DetallesGroupedByVotos(detallesGroupedByVotosModa._1, detallesGroupedByVotosModa._2, detallesGroupedByVotosConteo))
+          (candidato, DetallesGroupedByVotos(detallesGroupedByVotosModa._1, detallesGroupedByVotosModa._2, detallesGroupedByVotosConteo.toSeq.map(VotosReportadosDetalle.tupled)))
         }
         val e14 = e14ConReportesInvalidosMap.get(e14Id).get
         (e14, groupByCandidatoYVotos)
@@ -205,7 +202,11 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
         val conVotos = porCandidato.map{ case (k, v) => (k, v.votosReportados) }
         acc |+| conVotos
       }
-      ResumenSumatoria(sumaPorCandidato, data)
+      val statsDetalleE14 = data
+        .map{case (k, v) => (k, v.toSeq.map(StatsDetalleCandidato.tupled))}
+        .toSeq
+        .map(StatsDetallesE14.tupled)
+      ResumenSumatoria(sumaPorCandidato.toSeq.map(StatsResumenCandidato.tupled), statsDetalleE14)
     }
   }
 }
