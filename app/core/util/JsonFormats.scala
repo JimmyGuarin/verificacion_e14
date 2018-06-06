@@ -4,7 +4,7 @@ import models._
 import play.api.libs.json.Json
 
 case class DetalleReporteJson(candidatoId: Int, votosSospechosos: Int)
-case class ReporteE14Json(e14Id: Int, valido: Boolean, captchaToken: Option[String] = None,
+case class ReporteE14Json(e14Id: String, valido: Boolean, captchaToken: Option[String] = None,
                           detalles: Seq[DetalleReporteJson] = Nil)
 
 case class RespuestaCaptcha(success: Boolean)
@@ -25,6 +25,7 @@ case class ResumenSumatoria(resumen:  Map[Candidato, Int], detalles: Map[E14, Ma
 trait JsonFormats {
 
   implicit val E14Format = Json.format[E14]
+  implicit val E14EncriptFormat = Json.format[E14Encript]
   implicit val CandidatoFormat = Json.format[Candidato]
   implicit val DetalleReporteFormat = Json.format[DetalleReporteJson]
   implicit val ReporteFormat = Json.format[ReporteE14Json]
@@ -38,10 +39,10 @@ trait JsonFormats {
   implicit val gUserInfo = Json.format[GUserInfo]
   implicit val usuarioFormat = Json.format[Usuario]
 
-  implicit val votosReportadosCount = Json.format[VotosReportadosCount]
-  implicit val detallesGroupedByVotos = Json.format[DetallesGroupedByVotos]
+  //implicit val votosReportadosCount = Json.format[VotosReportadosCount]
+  //implicit val detallesGroupedByVotos = Json.format[DetallesGroupedByVotos]
 
-  implicit val resumenSumatoria = Json.format[ResumenSumatoria]
+ // implicit val resumenSumatoria = Json.format[ResumenSumatoria]
 }
 
 object JsonFormats extends JsonFormats {

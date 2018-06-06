@@ -18,7 +18,7 @@ export default class E14Info extends Component {
             <Label bsStyle="primary">Departamento</Label> {departamento}
           </h3> 
         </Col>
-        <Col xs={3} md={3}>
+        <Col xs={4} md={4}>
           <h3>
             <Label bsStyle="primary">Municipio</Label> {municipio}
           </h3> 

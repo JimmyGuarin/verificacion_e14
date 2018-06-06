@@ -25,7 +25,7 @@ class Validador extends Component {
   render() {
     return (
       this.state.loading ?
-      <h1>Cargando información de Departamentos</h1>
+      <h1 align="center">Cargando información de Departamentos...</h1>
       :
       <div className="App">
         <h1>Verificación E14</h1>

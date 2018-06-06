@@ -1,11 +1,10 @@
 package controllers.api
 
 import javax.inject.Singleton
-
 import core.CustomResponse
 import core.util.ReporteE14Json
 import daos.{CandidatoDao, DepartamentoDao, MunicipioDao, UsuarioDao}
-import models.{E14, Usuario}
+import models.{E14, E14Encript, Usuario}
 import play.api.Configuration
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.{LoginService, ReportesService}
@@ -28,7 +27,7 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
     authenticated(rs){ usuarioRequest =>
       CustomResponse.asyncResultz {
         val usuario: Usuario = usuarioRequest.usuario
-        val result: EitherT[Future, CustomResponse.ApiError, E14] =
+        val result: EitherT[Future, CustomResponse.ApiError, E14Encript] =
           for {
             e14 <- EitherT(reportesService.getRandomE14(usuario))
           } yield {

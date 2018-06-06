@@ -1,13 +1,13 @@
 package services
 
 import javax.inject.Singleton
-
 import akka.actor.ActorSystem
 import core.CustomResponse
 import core.CustomResponse.{ApiResponsez, _}
 import core.util._
 import daos.{CandidatoDao, DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
 import models._
+import play.api.Logger
 import play.api.cache.AsyncCacheApi
 import play.api.http.Status
 import play.api.libs.ws.WSClient
@@ -52,10 +52,10 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
   }
 
-  def getRandomE14(usuario: Usuario): Future[ApiResponsez[E14]] = {
+  def getRandomE14(usuario: Usuario): Future[ApiResponsez[E14Encript]] = {
 
-    def nextRandomE14(maxId: Int, totalE14: Int): Future[Option[E14]] = Future.apply {
-      var nextRandomE14: Option[E14] = None
+    def nextRandomE14(maxId: Int, totalE14: Int): Future[Option[E14Encript]] = Future.apply {
+      var nextRandomE14: Option[E14Encript] = None
       val totalPorUsuario = Await.result(reporteE14Dao.totalReportesPorUsuario(usuario.id.get), Duration.Inf) == totalE14
       var stop = totalPorUsuario
 
@@ -66,7 +66,10 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
         if (res.isEmpty) {
           val maybeE14 = Await.result(e14Dao.getById(randomId), Duration.Inf)
           if (maybeE14.isDefined) {
-            nextRandomE14 = maybeE14
+            nextRandomE14 = maybeE14.map(e14 => {
+              val encryptId = Encryption.encrypt(usuario.googleId, randomId.toString)
+              E14Encript(e14.link, e14.departamento, e14.municipio, e14.zona, e14.puesto, encryptId)
+            })
             stop = true
           }
         }
@@ -84,7 +87,9 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
-    val reporteE14 = ReporteE14(reporteJson.e14Id, usuario.id.get, reporteJson.valido)
+    val e14Id = Encryption.decrypt(usuario.googleId, reporteJson.e14Id).toInt
+    Logger.debug(s"e14Id guardarReporte ${e14Id}")
+    val reporteE14 = ReporteE14(e14Id, usuario.id.get, reporteJson.valido)
 
     for {
       reporteGuardado <- reporteE14Dao.guardarReporte(reporteE14)
