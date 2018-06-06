@@ -16,6 +16,8 @@ case class GTokenResponse(access_token: String, token_type: Option[String],
 
 case class GUserInfo(id: String, email: String, name: String)
 
+case class UsuarioJson(name: String, email: String)
+
 //Stats
 case class DetalleReporteStats(reporte: ReporteE14, detalle: DetalleReporteSospechoso)
 case class VotosReportadosCount(cantReportes: Int,  reportes: Seq[DetalleReporteStats])
@@ -43,7 +45,7 @@ trait JsonFormats {
   implicit val RespuestaCaptchaFormat = Json.format[RespuestaCaptcha]
   implicit val gTokenResponseFormat = Json.format[GTokenResponse]
   implicit val gUserInfo = Json.format[GUserInfo]
-  implicit val usuarioFormat = Json.format[Usuario]
+  implicit val usuarioFormat = Json.format[UsuarioJson]
 
 
   implicit val detalleReporteStats = Json.format[DetalleReporteStats]
