@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import { Row, Col, Button, Alert, Label } from 'react-bootstrap';
+import { Row, Col, Alert } from 'react-bootstrap';
 import ContentActions from './ContentActions';
 import IframeComponent from './IframeComponent';
 import { getNewE14, sendReport } from "../webapi/endpoints";
 import E14Info from '../ui-components/E14Info';
-
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
 export default class MainContent extends Component {
   constructor(props) {
@@ -63,7 +61,6 @@ export default class MainContent extends Component {
   }
 
   render() {
-    const { handleLogout } = this.props;
     return (
       this.state.loading ?
       <div>

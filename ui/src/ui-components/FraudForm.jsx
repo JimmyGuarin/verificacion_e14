@@ -18,11 +18,11 @@ export default class FraudForm extends Component {
   setAdded(candidateId, candidateName, votesNumber) {
     console.log("setAdded");
     this.candidatesAdded.push({
-      candidatoId: parseInt(candidateId),
+      candidatoId: parseInt(candidateId, 10),
       nombre: candidateName,
-      votosSospechosos: parseInt(votesNumber)
+      votosSospechosos: parseInt(votesNumber, 10)
     });
-    this.candidates = this.candidates.filter(s => s.id != candidateId);
+    this.candidates = this.candidates.filter(s => s.id !== candidateId);
     this.setState({added: this.state.added + 1});
   }
 

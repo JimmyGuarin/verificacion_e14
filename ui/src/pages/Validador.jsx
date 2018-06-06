@@ -1,17 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom';
-
-import { Redirect } from 'react-router';
-
  
 import MainContent from '../ui-components/MainContent';
-import NavigationBar from '../ui-components/NavigationBar';
-import withAuth from '../utils/withAuth';
 import withNavBar from '../utils/withNavbar';
 import { getDepartamentos, getMunicipios} from '../webapi/endpoints';
 

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
 import ActionButtons from './ActionButtons';
 import FraudForm from './FraudForm';
 

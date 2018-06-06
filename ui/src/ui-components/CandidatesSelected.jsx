@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import { Row, Col, Button, FormGroup, Form, 
-    ControlLabel, FormControl, HelpBlock, Table  } from 'react-bootstrap';
+import { Row, Col, Button, Table  } from 'react-bootstrap';
 import ReCAPTCHA   from 'react-google-recaptcha';   
 
 export default class CandidatesSelected extends Component {
@@ -30,7 +29,7 @@ export default class CandidatesSelected extends Component {
 
 
   render() {
-    const { candidatesAdded, onSend, onCancel } = this.props;  
+    const { candidatesAdded, onCancel } = this.props;  
     return (
       <div>
         <h3>Candidatos Agregados</h3>

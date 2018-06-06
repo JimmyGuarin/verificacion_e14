@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
-import { Redirect } from 'react-router';
 import { Row, Col, Label } from 'react-bootstrap';
 
 export default class E14Info extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+  
   render() { 
     const { departamento, municipio, zona, puesto } = this.props;  
     return (

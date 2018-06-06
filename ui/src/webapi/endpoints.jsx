@@ -1,9 +1,9 @@
 import { getToken } from '../services/AuthService';
 
 
-const COMMON_FETCH_OPTIONS = {
-  credentials: 'same-origin',
-};
+// const COMMON_FETCH_OPTIONS = {
+//   credentials: 'same-origin',
+// };
   
 const COMMON_FETCH_HEADERS = new Headers({
 'Accept': 'application/json',

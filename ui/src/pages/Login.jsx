@@ -1,17 +1,6 @@
 import React, {Component} from 'react';
 import loginLogo from '../images/logo_login.png';
-
-
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom';
-
-import { Redirect } from 'react-router';
-
 import { Row, Col } from 'react-bootstrap';
-import MainContent from '../ui-components/MainContent';
 import GoogleLogin from 'react-google-login';
 import AuthService from '../services/AuthService';
 

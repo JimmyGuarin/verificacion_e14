@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
-import { Redirect } from 'react-router';
-import { Navbar, Nav, NavItem, Button} from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 export default class NavigationBar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+  
   render() {
     const { handleLogout, userName } = this.props;
     return (

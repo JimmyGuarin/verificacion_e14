@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { Row, Col, Button, FormGroup, Form, 
-    ControlLabel, FormControl, HelpBlock  } from 'react-bootstrap';
+import { Col, Button, FormGroup, Form, 
+    ControlLabel, FormControl  } from 'react-bootstrap';
 
 export default class SelectCandidate extends Component { 
   
@@ -30,14 +30,12 @@ export default class SelectCandidate extends Component {
     const option = this.state.selectValue;
     if (option > 0) return 'success'; 
     else return 'error';
-    return null;
   }
 
   getValidationVote() {
     const option = this.state.voteValue;
     if (option > 0) return 'success'; 
     else return 'error';
-    return null;
   }
 
   handleChangeSelect(e) {
