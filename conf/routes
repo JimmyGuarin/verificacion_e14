@@ -12,10 +12,11 @@ GET     /                           controllers.HomeController.reactApp
 
 # Map static resources from the /public folder to the /assets URL path
 ### NoDocs ###
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
-### NoDocs ###
-# GET     /*file                      controllers.HomeController.assetOrDefault(file)
+#GET     /static/*file               controllers.Assets.versioned(path="/public", file: Asset)
+#GET     /static/*file               controllers.HomeController.assetOrDefault(file)
 
 # Api definition
 ->     /api                          api.Routes
+
+### NoDocs ###
+GET     /*file                      controllers.HomeController.assetOrDefault(file)
