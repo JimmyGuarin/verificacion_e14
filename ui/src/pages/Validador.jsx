@@ -25,10 +25,13 @@ class Validador extends Component {
   }
 
   getInfoUbicacion(codDepto, codMun) {
+    let nombreMun = "";
+    if (this.municipios[codDepto] && this.municipios[codDepto][codMun] 
+      && this.municipios[codDepto][codMun].nombre) 
+      nombreMun = this.municipios[codDepto][codMun].nombre;
     return ({
       nombreDepto: this.departamentos[codDepto].nombre,
-      nombreMun: this.municipios[codDepto] ? 
-      this.municipios[codDepto][codMun].nombre : ""
+      nombreMun: nombreMun
     });
   }
 
