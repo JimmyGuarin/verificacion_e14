@@ -9,7 +9,7 @@ export function getToken() {
 export default class AuthService {
     // Initializing important variables
     constructor(domain) {
-        this.domain = domain || 'http://localhost:3000/api' // API server domain
+        this.domain = domain || '/api' // API server domain
         this.fetch = this.fetch.bind(this) // React binding stuff
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -17,14 +17,11 @@ export default class AuthService {
 
     login(googleCode) {
         // Get a token from api server using the fetch api
-        var url = new URL(`${this.domain}/signin`),
-        params = {code:googleCode}
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        var url = `${this.domain}/signin?code=${googleCode}`
+        //params = {code:googleCode}
+        //Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         return this.fetch(url, {
             method: 'POST',
-            body: JSON.stringify({
-                code: googleCode,
-            })
         }).then(res => {
             console.log("res.Authorization", res);
             this.setToken(res.Authorization) // Setting the token in localStorage

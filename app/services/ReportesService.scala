@@ -47,10 +47,10 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
   private val estadisticasCacheKey = "estadisticas"
 
-  val estadisticasJob = actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 1.minute) {
-//    cache.remove(estadisticasCacheKey)
-    votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
-  }
+//  val estadisticasJob = actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 1.minute) {
+////    cache.remove(estadisticasCacheKey)
+//    votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
+//  }
 
   def getRandomE14(usuario: Usuario): Future[ApiResponsez[E14Encript]] = {
 
