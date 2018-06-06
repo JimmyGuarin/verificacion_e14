@@ -22,23 +22,19 @@ const Tech = ({ match }) => {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.handleLogout = this.handleLogout.bind(this);
-  }
-
-  handleLogout(){
-    Auth.logout()
-    console.log("handleLogout");
-    this.props.history.replace('/login');
   }
 
   render() {
     return (
       <Switch>
         <Route exact path="/login" component={Login}/>
-        <Route exact path="/validar" component={withAuth(Validador)}/>
-        <Redirect to="/validar"/>
+        <Route exact path="/verificar" component={withAuth(Validador)}/>
+        <Redirect to="/verificar"/>
       </Switch>
     );
   }
+
+  
+
 }
 export default App;

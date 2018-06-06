@@ -19,11 +19,11 @@ class MunicipioDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   private class MunicipiosTable(tag: Tag) extends Table[Municipio](tag, "municipio") {
 
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)
-    def idDepto = column[Int]("id_depto")
+    def codigoDepto = column[String]("codigo_depto")
 
     def codigo = column[String]("codigo")
     def nombre = column[String]("nombre")
 
-    def * = (idDepto, nombre, codigo, id.?) <> (Municipio.tupled, Municipio.unapply)
+    def * = (codigoDepto, nombre, codigo, id.?) <> (Municipio.tupled, Municipio.unapply)
   }
 }
