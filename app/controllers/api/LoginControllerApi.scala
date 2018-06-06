@@ -4,7 +4,7 @@ import javax.inject.Singleton
 
 import core.CustomResponse
 import core.util.UsuarioJson
-import daos.UsuarioDao
+import daos.{ReporteE14Dao, UsuarioDao}
 import play.api.Configuration
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.LoginService
@@ -15,7 +15,8 @@ import scalaz._
 
 @Singleton
 class LoginControllerApi @javax.inject.Inject()(cc: ControllerComponents, val loginService: LoginService,
-                                                val usuariosDao: UsuarioDao, val configuration: Configuration)
+                                                val usuariosDao: UsuarioDao, val configuration: Configuration,
+                                                reportesDao: ReporteE14Dao)
                                                (implicit val executionContext: ExecutionContext)
   extends AbstractController(cc) with Secured{
 
@@ -35,8 +36,12 @@ class LoginControllerApi @javax.inject.Inject()(cc: ControllerComponents, val lo
   def userInfo = Action.async { implicit rs =>
     authenticated(rs){ userRequest =>
       CustomResponse.asyncResultz{
-        val userJson = UsuarioJson(userRequest.usuario.name, userRequest.usuario.email)
-        Future.successful(userJson.right)
+
+        reportesDao
+          .statsUsuario(userRequest.usuario)
+          .map{ case (total, sosp) =>
+            UsuarioJson(userRequest.usuario.name, userRequest.usuario.email, total, sosp).right
+          }
       }
     }
   }

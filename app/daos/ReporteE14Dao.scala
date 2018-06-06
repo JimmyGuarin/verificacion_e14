@@ -2,14 +2,11 @@ package daos
 
 import javax.inject.Inject
 
-import core.CustomResponse.ApiResponsez
-import models.{DetalleReporteSospechoso, E14, ReporteE14}
+import models.{DetalleReporteSospechoso, ReporteE14, Usuario}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
-import scalaz._
-import Scalaz._
 
 class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, detalleDao: DetalleReporteSospechosoDao)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
@@ -44,6 +41,21 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
   def totalReportesPorUsuario(usuarioId: Int): Future[Int] = {
     val result = reportesE14Table.filter(r => r.usuarioId === usuarioId).length.result
     db.run(result)
+  }
+
+  def statsUsuario(usuario: Usuario): Future[(Int, Int)] = {
+    val totalReportesQuery = reportesE14Table.filter(_.usuarioId === usuario.id.get)
+    val sospechososQuery = totalReportesQuery.filter(_.valido)
+
+    val totalReportes = db.run(totalReportesQuery.size.result)
+    val reportesSospechosos = db.run(sospechososQuery.size.result)
+
+    for {
+      total <- totalReportes
+      sospechosos <- reportesSospechosos
+    } yield {
+      (total, sospechosos)
+    }
   }
 
   private[daos] class ReportesE14Table(tag: Tag) extends Table[ReporteE14](tag, "reporte_e14") {

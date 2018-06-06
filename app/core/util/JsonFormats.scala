@@ -16,7 +16,7 @@ case class GTokenResponse(access_token: String, token_type: Option[String],
 
 case class GUserInfo(id: String, email: String, name: String)
 
-case class UsuarioJson(name: String, email: String)
+case class UsuarioJson(name: String, email: String, reportes: Int, sospechosos: Int)
 
 //Stats
 case class DetalleReporteStats(reporte: ReporteE14, detalle: DetalleReporteSospechoso)
