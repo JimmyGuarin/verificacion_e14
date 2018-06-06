@@ -54,8 +54,8 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
   def getRandomE14(usuario: Usuario): Future[ApiResponsez[E14Encript]] = {
 
-    def nextRandomE14(maxId: Int, totalE14: Int): Future[Option[E14Encript]] = Future.apply {
-      var nextRandomE14: Option[E14Encript] = None
+    def nextRandomE14(maxId: Int, totalE14: Int): Future[Option[E14]] = Future.apply {
+      var nextRandomE14: Option[E14] = None
       val totalPorUsuario = Await.result(reporteE14Dao.totalReportesPorUsuario(usuario.id.get), Duration.Inf) == totalE14
       var stop = totalPorUsuario
 
@@ -66,10 +66,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
         if (res.isEmpty) {
           val maybeE14 = Await.result(e14Dao.getById(randomId), Duration.Inf)
           if (maybeE14.isDefined) {
-            nextRandomE14 = maybeE14.map(e14 => {
-              val encryptId = Encryption.encrypt(usuario.googleId, randomId.toString)
-              E14Encript(e14.link, e14.departamento, e14.municipio, e14.zona, e14.puesto, encryptId)
-            })
+            nextRandomE14 = maybeE14
             stop = true
           }
         }
@@ -77,12 +74,34 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       nextRandomE14
     }
 
+    def encryptId(e14: E14): E14Encript = {
+      val encryptId = Encryption.encrypt(usuario.googleId, e14.id.get.toString)
+      E14Encript(e14.link, e14.departamento, e14.municipio, e14.zona, e14.puesto, encryptId)
+    }
+
+    def withStats(mE14: Option[E14]): Future[Option[(E14, Int)]] = {
+      mE14 match {
+        case None => Future.successful(None)
+        case Some(e14) =>
+          reporteE14Dao
+            .totalReportes(e14.id.get)
+            .map(reportes => Some((e14, reportes)))
+      }
+    }
+
+    //Function Body
     for {
       maxId <- e14Dao.getMaxId()
       totalE14 <- e14Dao.totalRegistros()
       nextRandom <- nextRandomE14(maxId, totalE14)
+      withStats <- withStats(nextRandom)
     } yield {
-      nextRandom.toRightDisjunction(ApiError(Status.BAD_REQUEST, "E14 no disponible", "E14 no disponible"))
+      withStats.map{ case (randomE14, reportes) =>
+        encryptId(randomE14)
+          .copy(reportes = reportes)
+      }.toRightDisjunction(
+        ApiError(Status.BAD_REQUEST, "E14 no disponible", "E14 no disponible")
+      )
     }
   }
 
