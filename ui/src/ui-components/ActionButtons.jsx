@@ -8,14 +8,14 @@ export default class ActionButtons extends Component {
     return (
       <div>
         <Row>
-          <Col xs={2}>
+          <Col xs={4}>
             <Button className="buttons-action" bsStyle="success" onClick={handleSucess} bsSize="large">
               Limpio
             </Button>
           </Col> 
         </Row>  
         <Row>
-          <Col xs={2}>
+          <Col xs={4}>
             <Button className="buttons-action" bsStyle="danger" onClick={handleFraud} bsSize="large">
               Sospechoso
             </Button>

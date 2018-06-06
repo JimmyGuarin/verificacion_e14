@@ -9,10 +9,15 @@ export default function withNavbar(NavBarComponent) {
     return class NavBarWrapped extends Component {
         constructor(props) {
             super(props);
-            this.state = {
-              name: ""
-            }
             this.handleLogout = this.handleLogout.bind(this);
+            this.updateUserInfo = this.updateUserInfo.bind(this);
+            this.state = {
+              user: {
+                name: "",
+                reportes: "",
+                sospechosos: ""
+              }
+            }
         }
 
         handleLogout(){
@@ -20,19 +25,24 @@ export default function withNavbar(NavBarComponent) {
           this.props.history.replace('/login');
         }
 
+        updateUserInfo(user) {
+          this.setState({user: user});
+        }
+
         render() {
           return (
             <div>
-              <NavigationBar handleLogout={this.handleLogout} userName={this.state.name} />  
-              <NavBarComponent/>
+              <NavigationBar handleLogout={this.handleLogout} user={this.state.user} />  
+              <NavBarComponent 
+                userInfo={this.state.user} updateUserInfo={this.updateUserInfo} />
             </div>
-            
           )
         }
 
       componentDidMount() {
         getUserInfo().then(res => {
-          this.setState({name: res.response.name});
+          let user = res.response;
+          this.setState({user: user});
         });
       }
     }

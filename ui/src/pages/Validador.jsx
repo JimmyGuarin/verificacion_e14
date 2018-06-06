@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
  
+import { Row, Col} from 'react-bootstrap';
 import MainContent from '../ui-components/MainContent';
 import withNavBar from '../utils/withNavbar';
 import { getDepartamentos, getMunicipios} from '../webapi/endpoints';
@@ -13,13 +14,23 @@ class Validador extends Component {
   }
 
   render() {
+    const { ...rest } = this.props;
     return (
       this.state.loading ?
       <h1 align="center">Cargando información de Departamentos...</h1>
       :
       <div className="App">
-        <h1>Verificación E14</h1>
-        <MainContent getInfoUbicacion={this.getInfoUbicacion}/>
+        <Row>
+          <Col xs={2} md={2}>
+            <h5 align="left" className="label-powered">
+              Powered by <a target="__blank"href="http://rysoft.tech/">rysoft.tech</a>
+            </h5>
+          </Col>
+          <Col xsOffset={2} xs={4} md={4}>
+            <h1>Verificación E14</h1>
+          </Col>   
+        </Row>
+        <MainContent getInfoUbicacion={this.getInfoUbicacion} {...rest}/>
       </div>
     );
   }
