@@ -1,6 +1,6 @@
 package core.util
 
-import models._
+import models.{DetalleReporteSospechoso, _}
 import play.api.libs.json.Json
 
 case class DetalleReporteJson(candidatoId: Int, votosSospechosos: Int)
@@ -16,11 +16,15 @@ case class GTokenResponse(access_token: String, token_type: Option[String],
 
 case class GUserInfo(id: String, email: String, name: String)
 
-case class VotosReportadosCount(cantReportes: Int,  reportes: Seq[(ReporteE14, DetalleReporteSospechoso)])
-
-case class DetallesGroupedByVotos(votosReportados: Int, reportesDetalles: VotosReportadosCount, votosReportadosDetalle: Map[Int, VotosReportadosCount])
-
-case class ResumenSumatoria(resumen:  Map[Candidato, Int], detalles: Map[E14, Map[Candidato, DetallesGroupedByVotos]])
+//Stats
+case class DetalleReporteStats(reporte: ReporteE14, detalle: DetalleReporteSospechoso)
+case class VotosReportadosCount(cantReportes: Int,  reportes: Seq[DetalleReporteStats])
+case class VotosReportadosDetalle(votos: Int, votosReportados: VotosReportadosCount)
+case class DetallesGroupedByVotos(votosReportados: Int, reportesDetalles: VotosReportadosCount, votosReportadosDetalle: Seq[VotosReportadosDetalle])
+case class StatsResumenCandidato(candidato: Candidato, votos: Int)
+case class StatsDetalleCandidato(candidato: Candidato, detalle: DetallesGroupedByVotos)
+case class StatsDetallesE14(e14: E14, statsDetalleCandidato: Seq[StatsDetalleCandidato])
+case class ResumenSumatoria(resumen:  Seq[StatsResumenCandidato], detalles: Seq[StatsDetallesE14])
 
 trait JsonFormats {
 
@@ -30,6 +34,8 @@ trait JsonFormats {
   implicit val ReporteFormat = Json.format[ReporteE14Json]
   implicit val DeptoFormat = Json.format[Departamento]
   implicit val MunicipioFormat = Json.format[Municipio]
+  implicit val reporteE14Format = Json.format[ReporteE14]
+  implicit val detalleReporteSospechosoFormat = Json.format[DetalleReporteSospechoso]
 
 
   implicit val twitterTokenFormat = Json.format[TwitterToken]
@@ -38,8 +44,18 @@ trait JsonFormats {
   implicit val gUserInfo = Json.format[GUserInfo]
   implicit val usuarioFormat = Json.format[Usuario]
 
+
+  implicit val detalleReporteStats = Json.format[DetalleReporteStats]
   implicit val votosReportadosCount = Json.format[VotosReportadosCount]
+
+  implicit val votosReportadosDetalle = Json.format[VotosReportadosDetalle]
   implicit val detallesGroupedByVotos = Json.format[DetallesGroupedByVotos]
+
+  implicit val statsResumenCandidato = Json.format[StatsResumenCandidato]
+
+  implicit val statsDetalleCandidato = Json.format[StatsDetalleCandidato]
+
+  implicit val statsDetallesE14 = Json.format[StatsDetallesE14]
 
   implicit val resumenSumatoria = Json.format[ResumenSumatoria]
 }
