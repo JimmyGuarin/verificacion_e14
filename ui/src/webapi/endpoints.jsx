@@ -45,6 +45,12 @@ export function sendReport(data) {
   return post(apiRoot + '/saveReport', data)    
 }
 
+export function getPorcentajeTotal() {
+  return get(apiRoot + '/stats/porcentaje', {
+    accept: "application/json"
+  })    
+}
+
 // returns Promise[object], where object comes from JSON of response
 function get(url: string, searchParams?: { [string]: string }) {
   return rawAPIFetch(url, 'GET', { searchParams }).then(res => res);

@@ -3,13 +3,16 @@ import _ from 'lodash';
  
 import { Row, Col} from 'react-bootstrap';
 import MainContent from '../ui-components/MainContent';
+import VerificadosTotales from '../ui-components/VerificadosTotales';
 import withNavBar from '../utils/withNavbar';
 import { getDepartamentos, getMunicipios} from '../webapi/endpoints';
 
 class Validador extends Component {
   constructor(props) {
     super(props);
-    this.state = {loading: true};
+    this.state = {
+      loading: true,
+    };
     this.getInfoUbicacion = this.getInfoUbicacion.bind(this);
   }
 
@@ -27,8 +30,9 @@ class Validador extends Component {
             </h5>
           </Col>
           <Col xsOffset={2} xs={4} md={4}>
-            <h1>Verificación E14</h1>
-          </Col>   
+            <h1 align="center">Verificación E14</h1>
+            <VerificadosTotales />
+          </Col>
         </Row>
         <MainContent getInfoUbicacion={this.getInfoUbicacion} {...rest}/>
       </div>

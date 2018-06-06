@@ -4,7 +4,6 @@ import ContentActions from './ContentActions';
 import IframeComponent from './IframeComponent';
 import { getNewE14, sendReport } from "../webapi/endpoints";
 import E14Info from '../ui-components/E14Info';
-import VerificacionUserInfo from '../ui-components/VerificacionUserInfo';
 
 export default class MainContent extends Component {
   constructor(props) {
@@ -88,7 +87,7 @@ export default class MainContent extends Component {
               departamento={this.ubicacion.nombreDepto}
               municipio={this.ubicacion.nombreMun}
               zona={this.e14File.zona}
-              puesto={this.e14File.puesto}
+              reportes={this.e14File.reportes}
             />
           </Col>
         </Row>
