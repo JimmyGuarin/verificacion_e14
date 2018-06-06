@@ -3,6 +3,7 @@ package controllers.api
 import javax.inject.Singleton
 
 import core.CustomResponse
+import core.util.UsuarioJson
 import daos.UsuarioDao
 import play.api.Configuration
 import play.api.mvc.{AbstractController, ControllerComponents}
@@ -34,7 +35,8 @@ class LoginControllerApi @javax.inject.Inject()(cc: ControllerComponents, val lo
   def userInfo = Action.async { implicit rs =>
     authenticated(rs){ userRequest =>
       CustomResponse.asyncResultz{
-        Future.successful(userRequest.usuario.right)
+        val userJson = UsuarioJson(userRequest.usuario.name, userRequest.usuario.email)
+        Future.successful(userJson.right)
       }
     }
   }
