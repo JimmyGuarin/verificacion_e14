@@ -2,7 +2,7 @@ package models
 
 case class E14(link: String, /*mesa: String,*/ departamento: String, municipio: String, zona: String, puesto: String, id: Option[Int] = None)
 
-case class E14Encript(link: String, /*mesa: String,*/ departamento: String, municipio: String, zona: String, puesto: String, id: String)
+case class E14Encript(link: String, /*mesa: String,*/ departamento: String, municipio: String, zona: String, puesto: String, id: String, reportes: Int = 0)
 
 case class Usuario(googleId: String, email: String, name: String,  id: Option[Int] = None)
 
