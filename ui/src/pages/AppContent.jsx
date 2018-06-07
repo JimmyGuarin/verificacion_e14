@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import { Route, Switch, HashRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { Redirect } from 'react-router';
 import Validador from './Validador';
 import QuienesSomos from './QuienesSomos';
 import NavigationBar from '../ui-components/NavigationBar';
-import withNavBar from '../utils/withNavbar';
 import AuthService from '../services/AuthService';
 import { getUserInfo } from "../webapi/endpoints";
 import ModalAyuda from '../ui-components/ModalAyuda';
@@ -48,14 +47,14 @@ class AppContent extends Component {
   render() {
     const props = {
       userInfo: this.state.user,
-      updateUserInfo: this.updateUserInfo  
+      updateUserInfo: this.updateUserInfo
     }
-    console.log("!this.modalViewed", !this.modalViewed);
+
     return (
       <div>
-          <NavigationBar 
+          <NavigationBar
             showHelpModal={this.showHelpModal}
-            handleLogout={this.handleLogout} 
+            handleLogout={this.handleLogout}
             user={this.state.user}/>
           <Switch>
             <Route exact path="/verificar" render={() => (<Validador {...props} />)}/>
@@ -63,7 +62,7 @@ class AppContent extends Component {
             <Redirect to="/verificar"/>
           </Switch>
           {
-            (this.state.showHelpModal) ? 
+            (this.state.showHelpModal) ?
             <ModalAyuda onHide={this.closeHelpModal}/> : null
           }
       </div>

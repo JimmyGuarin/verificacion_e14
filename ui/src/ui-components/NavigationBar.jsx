@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Navbar, Nav, NavItem, Badge, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 export default class NavigationBar extends Component {
-  
+
   render() {
     const { handleLogout, showHelpModal, user } = this.props;
     const tooltip = (text) => (
@@ -34,10 +34,10 @@ export default class NavigationBar extends Component {
                 Verificar E14
             </NavItem>
             <NavItem eventKey={2} href="/estadisticas">
-                Estadísticas 
+                Estadísticas
             </NavItem>
             <NavItem eventKey={2} onClick={showHelpModal} >
-                Ayuda 
+                Ayuda
             </NavItem>
             <NavItem eventKey={2} href="/quienesomos">
               ¿Quiénes somos?
@@ -67,12 +67,6 @@ export default class NavigationBar extends Component {
       </Navbar>
     );
   }
-
-  componentDidMount() {
-    console.log("componentDidMount navigation");
-  
-  }
-
 }
 
 

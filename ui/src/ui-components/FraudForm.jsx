@@ -16,7 +16,6 @@ export default class FraudForm extends Component {
   }
 
   setAdded(candidateId, candidateName, votesNumber) {
-    console.log("setAdded");
     this.candidatesAdded.push({
       candidatoId: parseInt(candidateId, 10),
       nombre: candidateName,
@@ -26,7 +25,7 @@ export default class FraudForm extends Component {
     this.setState({added: this.state.added + 1});
   }
 
-  fetchCandidates = () => {  
+  fetchCandidates = () => {
     getCandidates().then(res => {
       this.candidates  = res.response;
       this.setState({loading: false});
@@ -50,12 +49,12 @@ export default class FraudForm extends Component {
         <h4>Formulario de E14 sospechoso</h4>
         <div className="fraude-form">
           <br/>
-          <SelectCandidate 
+          <SelectCandidate
             candidates={this.candidates}
             onAdded={this.setAdded}
           />
           <br/>
-          <CandidatesSelected 
+          <CandidatesSelected
             candidatesAdded={this.candidatesAdded}
             onSend={this.sendData}
             onCancel={handleCancelFraud}

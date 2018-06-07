@@ -14,7 +14,6 @@ export default class VerificadosTotales extends Component {
     obtenerNumeroVerificados() {
         getPorcentajeTotal().then(res => {
            this.setState({verificados: parseFloat(res.response.verificados)});
-           console.log("RES", res.response.verificados);
         })
       }
 
@@ -22,7 +21,7 @@ export default class VerificadosTotales extends Component {
      return <h5>Total Verificados: {(this.state.verificados * 100).toFixed(3)}%</h5>
     }
 
-    componentDidMount() { 
+    componentDidMount() {
       setInterval(this.obtenerNumeroVerificados, 60000);
     }
 }

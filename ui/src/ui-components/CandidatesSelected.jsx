@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Row, Col, Button, Table  } from 'react-bootstrap';
-import ReCAPTCHA   from 'react-google-recaptcha';   
+import ReCAPTCHA   from 'react-google-recaptcha';
 
 export default class CandidatesSelected extends Component {
 
@@ -12,7 +12,6 @@ export default class CandidatesSelected extends Component {
   }
 
   handleReCaptcha(value) {
-    console.log("handleReCaptcha", value);
     this.captcha = value;
   }
 
@@ -29,7 +28,7 @@ export default class CandidatesSelected extends Component {
 
 
   render() {
-    const { candidatesAdded, onCancel } = this.props;  
+    const { candidatesAdded, onCancel } = this.props;
     return (
       <div>
         <h5 className="title-votos-agregados">Votos sospechosos registrados</h5>
@@ -69,12 +68,12 @@ export default class CandidatesSelected extends Component {
             <Button bsStyle="danger" onClick={onCancel} id="someButton">
               Cancelar Verificación
             </Button>
-          </Col>  
+          </Col>
         </Row>
         <br/>
       </div>
     );
-      
+
   }
 
 }

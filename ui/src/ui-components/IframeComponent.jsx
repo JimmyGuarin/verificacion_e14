@@ -9,7 +9,7 @@ export default class IframeComponent extends Component {
     this.openExternal = this.openExternal.bind(this);
     this.modalWindows = null;
   }
-  
+
   openExternal() {
     const { link } = this.props;
     this.modalWindows = window.open(link, "", "width=500,height=500");
@@ -18,16 +18,15 @@ export default class IframeComponent extends Component {
 
   componentWillUnmount() {
    if(this.modalWindows) {
-    console.log("close");
     this.modalWindows.close();
    }
-     
+
   }
 
 
   render() {
     const { link } = this.props;
-   
+
     return (
       <div>
         <Row>
@@ -47,8 +46,8 @@ export default class IframeComponent extends Component {
               <a href={link} target="_blank">Vista previa no disponible</a>
             </div>
           </Col>
-        </Row>   
-      </div> 
+        </Row>
+      </div>
     );
   }
 }

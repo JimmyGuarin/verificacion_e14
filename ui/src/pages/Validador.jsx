@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { Row, Col} from 'react-bootstrap';
 import MainContent from '../ui-components/MainContent';
 import VerificadosTotales from '../ui-components/VerificadosTotales';
-import withNavBar from '../utils/withNavbar';
 import { getDepartamentos, getMunicipios} from '../webapi/endpoints';
 
 class Validador extends Component {

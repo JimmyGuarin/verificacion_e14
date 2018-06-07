@@ -13,7 +13,6 @@ export default class Login extends Component {
   }
 
   responseGoogle(response) {
-    console.log("Response", response);
     if (response.code) {
       this.Auth.login(response.code)
         .then(res =>{
@@ -26,10 +25,10 @@ export default class Login extends Component {
         .catch(err =>{
             alert(err);
         })
-    }    
+    }
   }
 
-  render() { 
+  render() {
     return (
       <div>
         <Row>
@@ -42,8 +41,8 @@ export default class Login extends Component {
           <Col xsOffset={2} mdOffset={4} xs={8} md={4}>
             <img  width="100%" height="auto"  src={loginLogo} alt="Scala Logo" />
           </Col>
-        </Row> 
-        <br/> 
+        </Row>
+        <br/>
         <Row>
           <Col xsOffset={4} mdOffset={5} xs={4} md={2} className="container-button-login">
           <GoogleLogin
@@ -51,12 +50,12 @@ export default class Login extends Component {
             buttonText="Login"
             responseType='code'
             onSuccess={this.responseGoogle}
-            onFailure={this.responseGoogle} /> 
+            onFailure={this.responseGoogle} />
           </Col>
         </Row>
         <br/>
       </div>
-     
+
     );
   }
 
