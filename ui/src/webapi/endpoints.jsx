@@ -5,10 +5,6 @@ import { getToken } from '../services/AuthService';
 //   credentials: 'same-origin',
 // };
   
-const COMMON_FETCH_HEADERS = new Headers({
-'Accept': 'application/json',
-});
-
 const apiRoot = '/api';
 
 export function getNewE14() {
@@ -56,8 +52,8 @@ function get(url: string, searchParams?: { [string]: string }) {
   return rawAPIFetch(url, 'GET', { searchParams }).then(res => res);
 }
 
-export function post(url: string, content: RequestContent): Promise<number> {
-  return rawAPIFetch(url, 'POST', JSON.stringify(content))
+export function post(url: string, body: RequestContent): Promise<number> {
+  return rawAPIFetch(url, 'POST', JSON.stringify(body))
     .then(res => res);
 }
 
@@ -72,31 +68,29 @@ function checkValidJson(fetchResponse): Promise<any> {
     return fetchResponse.json().then(
         json => fetchResponse.ok ?
             Promise.resolve(json) :
-            Promise.reject("ErrOR")
+            Promise.reject("ERROR")
     );
 }
 
 
-export function rawAPIFetch(url: string, method: fetch.MethodType, content: ?(string | Blob)): Promise<any> {
-    let headers = new Headers(COMMON_FETCH_HEADERS);
+export function rawAPIFetch(url: string, method, content): Promise<any> {
+    let headers = new Headers();
     if (content !== undefined) {
       headers.set('Content-Type', 'application/json');
     }
-    headers.set( 'Authorization', getToken());
-  
-    let request = new Request(url,
-    {
-    method,
-    body: content,
-    headers,
-    });
+    headers.set( 'Authorization', getToken()); 
+    let request;
+    if(method === 'POST')
+      request = new Request(url, {method, body: content, headers});
+    if(method === 'GET')
+      request = new Request(url, {method, content, headers});
   
     return fetch(request)
         .then(
             checkValidJson,
             // fetch() only rejects if the browser doesn't even try - perms or offline
             e => {
-              const errorMsg = 'Cannot contact the server. You may be offline. Please check your internet connection';
+              const errorMsg = 'Cannot contact the server. You may be offline. Please check your internet connection' + e;
               return Promise.reject(new Error(errorMsg));
             }
         );
