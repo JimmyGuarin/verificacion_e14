@@ -10,9 +10,7 @@ organization := "rysoft"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, SwaggerPlugin, SbtWeb)
-
-swaggerDomainNameSpaces := Seq("models")
+lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
 scalaVersion := "2.12.3"
 
@@ -29,8 +27,7 @@ libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.2.23",
 // Java
   "org.postgresql" % "postgresql" % "42.1.1",
-  "org.webjars" % "swagger-ui" % "2.2.10",
-  "com.twitter" % "joauth" % "6.0.2",
+  //"com.twitter" % "joauth" % "6.0.2",
   //JWT
   "com.pauldijou" %% "jwt-play" % "0.16.0"
 )
