@@ -28,7 +28,9 @@ class E14Dao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider, 
 
   def e14ConReportesInvalidos: Future[Seq[E14]] = {
     val result = for {
-      (e14, _) <- (E14Table join reportesDao.reportesE14Table).filter(_._2.valido)
+      (e14, _) <- (E14Table join reportesDao.reportesE14Table on (_.id === _.e14Id))
+        .filter(!_._2.valido)
+        //.distinctOn(_._1.id)
     } yield {
       e14
     }
