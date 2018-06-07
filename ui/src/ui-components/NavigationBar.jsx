@@ -4,7 +4,7 @@ import { Navbar, Nav, NavItem, Badge, Tooltip, OverlayTrigger } from 'react-boot
 export default class NavigationBar extends Component {
   
   render() {
-    const { handleLogout, user } = this.props;
+    const { handleLogout, showHelpModal, user } = this.props;
     const tooltip = (text) => (
       <Tooltip id="tooltip">
         <strong>{text}</strong>
@@ -14,17 +14,33 @@ export default class NavigationBar extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
             <Navbar.Brand>
-            <a>Verificación E14</a>
+              <a>Transparencia electoral</a>
             </Navbar.Brand>
-            <Navbar.Toggle />
+            <Navbar.Brand className="hidden-md hidden-lg">
+              <NavItem style={{display : 'block'}}>
+                <Badge className="badge-success">{user.reportes}</Badge>
+              </NavItem>
+            </Navbar.Brand>
+            <Navbar.Brand className="hidden-md hidden-lg">
+              <NavItem style={{display : 'block'}}>
+                <Badge className="badge-error">{user.sospechosos}</Badge>
+              </NavItem>
+            </Navbar.Brand>
+            <Navbar.Toggle/>
         </Navbar.Header>
         <Navbar.Collapse>
             <Nav>
             <NavItem eventKey={1} href="/validar">
-                Verificar
+                Verificar E14
             </NavItem>
-            <NavItem eventKey={2} href="/datos">
-                Datos
+            <NavItem eventKey={2} href="/estadisticas">
+                Estadísticas 
+            </NavItem>
+            <NavItem eventKey={2} onClick={showHelpModal} >
+                Ayuda 
+            </NavItem>
+            <NavItem eventKey={2} href="/quienesomos">
+              ¿Quiénes somos?
             </NavItem>
             </Nav>
             <Nav pullRight>
@@ -34,10 +50,10 @@ export default class NavigationBar extends Component {
             </Nav>
             <Nav pullRight>
               <Navbar.Text>
-                  Reportados por {user.name}
+                   E14 verificados por {user.name}
               </Navbar.Text>
               <Navbar.Text>
-                <OverlayTrigger placement="bottom" overlay={tooltip("Total reportados")}>
+                <OverlayTrigger placement="bottom" overlay={tooltip("Total verificados")}>
                   <Badge className="badge-success">{user.reportes}</Badge>
                  </OverlayTrigger>
               </Navbar.Text>
@@ -50,6 +66,11 @@ export default class NavigationBar extends Component {
         </Navbar.Collapse>
       </Navbar>
     );
+  }
+
+  componentDidMount() {
+    console.log("componentDidMount navigation");
+  
   }
 
 }

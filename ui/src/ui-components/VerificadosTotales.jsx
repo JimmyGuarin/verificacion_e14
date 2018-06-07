@@ -13,13 +13,13 @@ export default class VerificadosTotales extends Component {
 
     obtenerNumeroVerificados() {
         getPorcentajeTotal().then(res => {
-           this.setState({verificados: this.state.verificados});
+           this.setState({verificados: parseFloat(res.response.verificados)});
            console.log("RES", res.response.verificados);
         })
       }
 
     render() {
-     return <h5>Total Verificados: {this.state.verificados * 100}%</h5>
+     return <h5>Total Verificados: {(this.state.verificados * 100).toFixed(3)}%</h5>
     }
 
     componentDidMount() { 

@@ -47,13 +47,14 @@ export default class FraudForm extends Component {
       </div>
       :
       <div>
-        <h4>Registro de E14 sospechoso</h4>
+        <h4>Formulario de E14 sospechoso</h4>
         <div className="fraude-form">
           <br/>
           <SelectCandidate 
             candidates={this.candidates}
             onAdded={this.setAdded}
           />
+          <br/>
           <CandidatesSelected 
             candidatesAdded={this.candidatesAdded}
             onSend={this.sendData}

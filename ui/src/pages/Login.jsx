@@ -18,7 +18,10 @@ export default class Login extends Component {
       this.Auth.login(response.code)
         .then(res =>{
             console.log("res", res);
-            this.props.history.replace('/');
+            this.props.history.push({
+              pathname: '/',
+              state: { fromLogin: true }
+            });
         })
         .catch(err =>{
             alert(err);
@@ -52,13 +55,6 @@ export default class Login extends Component {
           </Col>
         </Row>
         <br/>
-        <Row>
-          <Col xsOffset={2} mdOffset={4} xs={8} md={4}>
-            <h4 align="center">
-              Powered by <a target="__blank"href="http://rysoft.tech/">rysoft.tech</a>
-            </h4>
-          </Col>
-        </Row>
       </div>
      
     );

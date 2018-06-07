@@ -93,17 +93,14 @@ export default class MainContent extends Component {
         </Row>
         <hr/>
         <Row>
-        <Col xs={6} md={6}>
+        <Col xs={12} md={6}>
           <IframeComponent
             link={this.e14File.link}/>  
           </Col>
-          <Col xs={6} md={6}>
+          <Col xs={12} md={6}>
             <ContentActions
               sendReport= {this.sendToReport}/>
           </Col>
-        </Row>
-        <Row>
-          test
         </Row>
       </div>
     );

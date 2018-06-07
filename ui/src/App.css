@@ -48,6 +48,34 @@ img {
   border: 1px solid aliceblue;
 }
 
+@media only screen and (max-width: 719px) {
+  .buttons-action{
+    width: 100%;
+    height: 50px;
+    margin-top: 20%;
+    margin-left: 3px;
+  }
+
+  h4 {
+    font-size: 13px;
+  }
+
+  button {
+    font-size: 12px;
+  }
+  
+}
+
+.title-votos-agregados {
+  font-weight: bold;
+}
+
+.text-about {
+  margin-left: 25%;
+  margin-right: 25%;
+  text-align: justify;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

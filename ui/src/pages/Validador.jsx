@@ -24,12 +24,7 @@ class Validador extends Component {
       :
       <div className="App">
         <Row>
-          <Col xs={2} md={2}>
-            <h5 align="left" className="label-powered">
-              Powered by <a target="__blank"href="http://rysoft.tech/">rysoft.tech</a>
-            </h5>
-          </Col>
-          <Col xsOffset={2} xs={4} md={4}>
+          <Col xsOffset={0} xs={12}>
             <h1 align="center">Verificación E14</h1>
             <VerificadosTotales />
           </Col>
@@ -63,5 +58,5 @@ class Validador extends Component {
   }
 }
 
-export default withNavBar(Validador);
+export default Validador;
 

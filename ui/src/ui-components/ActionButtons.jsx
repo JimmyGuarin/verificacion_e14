@@ -8,14 +8,26 @@ export default class ActionButtons extends Component {
     return (
       <div>
         <Row>
-          <Col xs={4}>
+          <Col xsOffset={2} mdOffset={0} md={4} xsHidden smHidden>
             <Button className="buttons-action" bsStyle="success" onClick={handleSucess} bsSize="large">
-              Limpio
+              OK
             </Button>
           </Col> 
         </Row>  
         <Row>
-          <Col xs={4}>
+          <Col xsOffset={2} mdOffset={0} md={4} xsHidden smHidden>
+            <Button className="buttons-action" bsStyle="danger" onClick={handleFraud} bsSize="large">
+              Sospechoso
+            </Button>
+          </Col>  
+        </Row>
+        <Row>
+          <Col xsOffset={1} xs={5} mdHidden lgHidden>
+            <Button className="buttons-action" bsStyle="success" onClick={handleSucess} bsSize="large">
+              OK
+            </Button>
+          </Col>
+          <Col  xs={5} mdHidden lgHidden>
             <Button className="buttons-action" bsStyle="danger" onClick={handleFraud} bsSize="large">
               Sospechoso
             </Button>

@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch} from 'react-router-dom';
 
 import { Redirect } from 'react-router';
 import Login from './pages/Login';
+import AppContent from './pages/AppContent';
 import Validador from './pages/Validador';
+import QuienesSomos from './pages/QuienesSomos';
 import './App.css';
 import withAuth from './utils/withAuth';
+import withNavBar from './utils/withNavbar';
 
 class App extends Component {
   
@@ -13,13 +16,11 @@ class App extends Component {
     return (
       <Switch>
         <Route exact path="/login" component={Login}/>
-        <Route exact path="/verificar" component={withAuth(Validador)}/>
+        <Route path="/" component={withAuth(AppContent)}/>
         <Redirect to="/verificar"/>
       </Switch>
     );
   }
-
-  
-
 }
+
 export default App;

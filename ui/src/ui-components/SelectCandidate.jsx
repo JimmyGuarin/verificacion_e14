@@ -52,6 +52,11 @@ export default class SelectCandidate extends Component {
   render() {
     return(  
     <Form horizontal>
+      <Row>
+        <Col xs={12}>
+          <h5 className="title-votos-agregados">Registrar votos sospechosos por candidato</h5>
+        </Col> 
+      </Row>
       <FormGroup controlId="formHorizontalEmail" validationState={this.getValidationSelect()}>
         <Col componentClass={ControlLabel} sm={3}>
             Candidato
@@ -88,9 +93,9 @@ export default class SelectCandidate extends Component {
         </Col>     
       </FormGroup>
       <Row>
-        <Col xsOffset= {4} sm={4}>
+        <Col xsOffset={3} xs={6}>
             <Button bsStyle="success"  onClick={this.sendSelected}>
-              Agregar Candidato
+              Registrar votos sospechosos
             </Button>
         </Col> 
       </Row>

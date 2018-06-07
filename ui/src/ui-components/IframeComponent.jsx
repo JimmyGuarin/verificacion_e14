@@ -31,7 +31,7 @@ export default class IframeComponent extends Component {
     return (
       <div>
         <Row>
-          <Col xsOffset={4} xs={4}>
+          <Col xsOffset={0} xs={12} mdOffset={4} md={4}>
            <Button bsStyle="link" onClick={this.openExternal}>Abrir en otra ventana</Button>
           </Col>
         </Row>

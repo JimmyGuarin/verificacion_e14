@@ -32,6 +32,7 @@ export default class CandidatesSelected extends Component {
     const { candidatesAdded, onCancel } = this.props;  
     return (
       <div>
+        <h5 className="title-votos-agregados">Votos sospechosos registrados</h5>
         <Table bordered condensed>
           <thead className="thead-dark">
             <tr>
@@ -59,12 +60,12 @@ export default class CandidatesSelected extends Component {
         <br/>
         </div>
         <Row>
-          <Col xsOffset={2} xs={4}>
+          <Col xsOffset={1} mdOffset={2} xs={5} md={4}>
             <Button bsStyle="success" onClick={this.tryToSend} id="someButton">
               Enviar Verificación
             </Button>
           </Col>
-          <Col xs={4}>
+          <Col mdOffset={0} xs={5} md={4}>
             <Button bsStyle="danger" onClick={onCancel} id="someButton">
               Cancelar Verificación
             </Button>
