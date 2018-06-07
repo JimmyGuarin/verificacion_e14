@@ -51,7 +51,7 @@ class AppContent extends Component {
     }
 
     return (
-      <div>
+      <div className="container-fluid main-container">
           <NavigationBar
             showHelpModal={this.showHelpModal}
             handleLogout={this.handleLogout}

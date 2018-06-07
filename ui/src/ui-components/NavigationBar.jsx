@@ -13,8 +13,11 @@ export default class NavigationBar extends Component {
     return (
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
-            <Navbar.Brand>
+            <Navbar.Brand className="hidden-xs hidden-sm">
               <a>Transparencia electoral</a>
+            </Navbar.Brand>
+            <Navbar.Brand className="hidden-md hidden-lg">
+              <a>Transp electoral</a>
             </Navbar.Brand>
             <Navbar.Brand className="hidden-md hidden-lg">
               <NavItem style={{display : 'block'}}>

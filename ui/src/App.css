@@ -48,6 +48,19 @@ img {
   border: 1px solid aliceblue;
 }
 
+.iframe-content {
+  height: 450px;
+}
+
+iframe {
+  position: relative !important;
+}
+
+.main-container {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 @media only screen and (max-width: 719px) {
   .buttons-action{
     width: 100%;
@@ -62,6 +75,10 @@ img {
 
   button {
     font-size: 12px;
+  }
+
+  .iframe-content {
+    height: 250px;
   }
   
 }

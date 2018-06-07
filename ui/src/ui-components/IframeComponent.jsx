@@ -31,20 +31,16 @@ export default class IframeComponent extends Component {
       <div>
         <Row>
           <Col xsOffset={0} xs={12} mdOffset={4} md={4}>
-           <Button bsStyle="link" onClick={this.openExternal}>Abrir en otra ventana</Button>
+           <Button bsStyle="link" onClick={this.openExternal}>Abrir E14 en otra ventana</Button>
           </Col>
         </Row>
         <Row>
-          <Col xs={12}>
+          <Col xs={12} className="iframe-content">
               <Iframe url={"https://docs.google.com/gview?url="+link+"&embedded=true"}
-            position="absolute"
             width="100%"
-            height="450px"
+            height="100%"
             id="myId"
             className="myClassname"/>
-            <div style={{marginTop: '200px'}}>
-              <a href={link} target="_blank">Vista previa no disponible</a>
-            </div>
           </Col>
         </Row>
       </div>
