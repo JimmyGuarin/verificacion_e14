@@ -36,7 +36,7 @@ export default class IframeComponent extends Component {
         </Row>
         <Row>
           <Col xs={12}>
-              <Iframe url={"http://docs.google.com/gview?url="+link+"&embedded=true"}
+              <Iframe url={"https://docs.google.com/gview?url="+link+"&embedded=true"}
             position="absolute"
             width="100%"
             height="450px"
