@@ -26,17 +26,12 @@ class HomeController @javax.inject.Inject()(db: Database, cc: ControllerComponen
                                             val configuration: Configuration, errorHandler: HttpErrorHandler)(implicit executionContext: ExecutionContext)
   extends AbstractController(cc){
 
-
-  def index = Action {
-    Ok("")
-  }
-
   def reactApp: Action[AnyContent] = assets.at("index.html")
 
   def assetOrDefault(resource: String): Action[AnyContent] = if (resource.startsWith(configuration.get[String]("apiPrefix"))){
     Action.async(r => errorHandler.onClientError(r, NOT_FOUND, "Not found"))
   } else {
-    if (resource.contains(".")) assets.at(resource) else index
+    if (resource.contains(".")) assets.at(resource) else reactApp
   }
 
 }

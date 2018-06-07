@@ -21,10 +21,18 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
   }
 
   def reportesInvalidosConDetalles: Future[scala.Seq[(ReporteE14, DetalleReporteSospechoso)]] = {
+
+//    for {
+//      (reporteInvalido, detalle) <- (reportesE14Table join
+//        detalleDao.detallesReporteSospechosoTable on(_.id === _.reporteId))
+//        .filter(!_._1.valido)
+//    } yield {
+//      (reporteInvalido, detalle)
+//    }
+
     //TODO check that join works
     val joinResult = for {
-      reporteInvalido <- reportesE14Table.filter(_.valido === true)
-//      (reporte, detalle) <- novalidos join detalleDao.detallesReporteSospechosoTable on (_.id === _.reporteId)
+      reporteInvalido <- reportesE14Table.filter(!_.valido)
       detalle <- detalleDao.detallesReporteSospechosoTable if reporteInvalido.id === detalle.reporteId
     } yield {
       (reporteInvalido, detalle)

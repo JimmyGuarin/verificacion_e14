@@ -1,6 +1,7 @@
 package services
 
 import javax.inject.Singleton
+
 import akka.actor.ActorSystem
 import core.CustomResponse
 import core.CustomResponse.{ApiResponsez, _}
@@ -17,7 +18,6 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.Random
 import scalaz.Scalaz._
 import scalaz._
-
 import scala.concurrent.duration._
 
 
@@ -38,7 +38,8 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
                                              reporteE14Dao: ReporteE14Dao,
                                              detalleReporteDao: DetalleReporteSospechosoDao,
                                              cache: AsyncCacheApi,
-                                             actorSystem: ActorSystem)(
+                                             actorSystem: ActorSystem,
+                                             encryption: E14Encryption)(
                                               implicit executionContext: ExecutionContext) {
 
   import core.util.JsonFormats._
@@ -78,7 +79,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     }
 
     def encryptId(e14: E14): E14Encript = {
-      val encryptId = Encryption.encrypt(usuario.googleId, e14.id.get.toString)
+      val encryptId = encryption.encrypt(usuario.googleId, e14.id.get.toString)
       E14Encript(e14.link, e14.departamento, e14.municipio, e14.zona, e14.puesto, encryptId)
     }
 
@@ -109,8 +110,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
-    val e14Id = Encryption.decrypt(usuario.googleId, reporteJson.e14Id).toInt
-    Logger.debug(s"e14Id guardarReporte ${e14Id}")
+    val e14Id = encryption.decrypt(usuario.googleId, reporteJson.e14Id).toInt
     val reporteE14 = ReporteE14(e14Id, usuario.id.get, reporteJson.valido)
 
     for {
@@ -200,17 +200,22 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   def agrupadosPorCandidatoYVoto: Future[Map[E14, Map[Candidato, DetallesGroupedByVotos]]]  = {
-    val agrupadoPorE14 = reporteE14Dao.reportesInvalidosConDetalles.map(_.groupBy(_._1.e4Id))
 
     for {
       candidatos <- candidatoDao.all()
       e14ConReportesInvalidos <- e14Dao.e14ConReportesInvalidos
-      agrupados <- agrupadoPorE14
+      agrupados <- reporteE14Dao.reportesInvalidosConDetalles.map(_.groupBy(_._1.e4Id))
     } yield {
+      Logger.debug(s"En yield de agrupadosPorCandidatoYVoto - candidatos ${candidatos.size}")
+      Logger.debug(s"e14ConReportesInvalidos ${e14ConReportesInvalidos.size}")
+      Logger.debug(s"agrupados ${agrupados.size}")
+
       val candidatosMap = candidatos.map(c => (c.id.get, c)).toMap
       val e14ConReportesInvalidosMap = e14ConReportesInvalidos.map(e => (e.id.get, e)).toMap
+
       agrupados.map { case (e14Id, reportes) =>
         val groupByCandidato = reportes.groupBy{case(_, detalle) => detalle.candidatoId}
+
         val groupByCandidatoYVotos = groupByCandidato.map{case (candId, reportesDetalle) =>
           val detallesGroupedByVotos = reportesDetalle.groupBy{case(_, det) => det.votosSospechoso}
           val detallesGroupedByVotosConteo = detallesGroupedByVotos.map{case (votosSospechosos, seqReportes) =>
@@ -234,6 +239,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       candidatos <- candidatoDao.all()
       data <- agrupadosPorCandidatoYVoto
     } yield {
+      Logger.debug(s"En yield de votosReportadosByCandidato ${data.size}")
       val zero = candidatos.map(c => (c, 0)).toMap
       val sumaPorCandidato = data.foldLeft(zero){ case (acc, (e14, porCandidato)) =>
         val conVotos = porCandidato.map{ case (k, v) => (k, v.votosReportados) }

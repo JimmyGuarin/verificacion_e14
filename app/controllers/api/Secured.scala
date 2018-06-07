@@ -6,7 +6,7 @@ import models.Usuario
 import play.api.mvc._
 import services.LoginService
 import pdi.jwt._
-import play.api.{Configuration, Logger}
+import play.api.{Configuration}
 import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json.{JsObject, JsString, Json, Writes}
 import play.api.mvc.Results.Ok
@@ -62,7 +62,6 @@ trait Secured {
 
     val rwjs = Ok.addingToJwtSession(TOKEN_ID -> usuario.id.get.toString)
     val session = rwjs.jwtSession
-    Logger.debug(s"Secured session: ${session.toString}")
 
     Ok {
       Json.obj(
@@ -83,10 +82,8 @@ trait Secured {
   private def requestToJwtSession(request: RequestHeader): JwtSession = {
 
     val hn = request.headers.get(JwtSession.REQUEST_HEADER_NAME)
-    Logger.debug(s"requestToJwtSession $hn")
     val sh = hn.map(sanitizeHeader)
     val dh = sh.map(JwtSession.deserialize)
-    Logger.debug(s"requestToJwtSession $dh")
     dh.getOrElse(JwtSession())
   }
 

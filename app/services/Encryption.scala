@@ -4,7 +4,10 @@ import java.security.MessageDigest
 import java.util
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
+import javax.inject.Singleton
+
 import org.apache.commons.codec.binary.Base64
+import play.api.Configuration
 
 /**
   * Sample:
@@ -18,7 +21,8 @@ import org.apache.commons.codec.binary.Base64
   *   res1: String = pula, pizda, coaiele!
   * }}}
   */
-object Encryption {
+@Singleton
+class E14Encryption @javax.inject.Inject()(configuration: Configuration) {
   def encrypt(key: String, value: String): String = {
     val cipher: Cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
     cipher.init(Cipher.ENCRYPT_MODE, keyToSpec(key))
@@ -40,5 +44,6 @@ object Encryption {
   }
 
   private val SALT: String =
-    "jMhKlOuJnM34G6NHkqo9V010GhLAqOpF0BePojHgh1HgNg8^72k"
+    configuration.getOptional[String]("play.http.secret.key").getOrElse(
+    "jMhKlOuJnM34G6NHkqo9V010GhLAqOpF0BePojHgh1HgNg8^72k")
 }

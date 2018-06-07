@@ -92,6 +92,7 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
     CustomResponse.asyncResultz {
       reportesService
         .estadisticasFromCache
+//        .votosReportadosByCandidato
         .map(_.right)
     }
   }
