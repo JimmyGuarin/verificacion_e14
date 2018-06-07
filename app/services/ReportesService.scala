@@ -7,7 +7,6 @@ import core.CustomResponse.{ApiResponsez, _}
 import core.util._
 import daos.{CandidatoDao, DetalleReporteSospechosoDao, E14Dao, ReporteE14Dao}
 import models._
-import play.api.Logger
 import play.api.cache.AsyncCacheApi
 import play.api.http.Status
 import play.api.libs.ws.WSClient
@@ -110,7 +109,6 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
     val e14Id = Encryption.decrypt(usuario.googleId, reporteJson.e14Id).toInt
-    Logger.debug(s"e14Id guardarReporte ${e14Id}")
     val reporteE14 = ReporteE14(e14Id, usuario.id.get, reporteJson.valido)
 
     for {
