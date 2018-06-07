@@ -37,7 +37,8 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
                                              reporteE14Dao: ReporteE14Dao,
                                              detalleReporteDao: DetalleReporteSospechosoDao,
                                              cache: AsyncCacheApi,
-                                             actorSystem: ActorSystem)(
+                                             actorSystem: ActorSystem,
+                                             encryption: E14Encryption)(
                                               implicit executionContext: ExecutionContext) {
 
   import core.util.JsonFormats._
@@ -77,7 +78,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     }
 
     def encryptId(e14: E14): E14Encript = {
-      val encryptId = Encryption.encrypt(usuario.googleId, e14.id.get.toString)
+      val encryptId = encryption.encrypt(usuario.googleId, e14.id.get.toString)
       E14Encript(e14.link, e14.departamento, e14.municipio, e14.zona, e14.puesto, encryptId)
     }
 
@@ -108,7 +109,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   def guardarReporte(usuario: Usuario, reporteJson: ReporteE14Json): Future[CustomResponse.ApiResponsez[String]] = {
-    val e14Id = Encryption.decrypt(usuario.googleId, reporteJson.e14Id).toInt
+    val e14Id = encryption.decrypt(usuario.googleId, reporteJson.e14Id).toInt
     val reporteE14 = ReporteE14(e14Id, usuario.id.get, reporteJson.valido)
 
     for {
