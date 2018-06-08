@@ -17,6 +17,7 @@
     "react-async-script": "^0.9.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.2.0",
+    "react-google-charts": "^1.6.6",
     "react-google-login": "^3.2.1",
     "react-google-recaptcha": "^0.11.1",
     "react-iframe": "^1.1.0",
