@@ -67,7 +67,7 @@ export default class ModalAyuda extends Component {
             bsSize="large"
             aria-labelledby="contained-modal-title-lg">
             <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-lg">Modal heading</Modal.Title>
+              <Modal.Title id="contained-modal-title-lg"><h3 align="center">Instrucciones</h3></Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <div>

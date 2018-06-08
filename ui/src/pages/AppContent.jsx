@@ -66,7 +66,7 @@ class AppContent extends Component {
           </Switch>
           {
             (this.state.showHelpModal || 
-            (!this.helpViewed && this.state.user.reportes < 100 ))  ?
+            (!this.helpViewed && this.state.user.reportes === 0 ))  ?
               <ModalAyuda onHide={this.closeHelpModal}/> : null
           }
       </div>

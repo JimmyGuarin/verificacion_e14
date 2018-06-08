@@ -34,6 +34,7 @@ export default class IframeComponent extends Component {
            <Button bsStyle="link" onClick={this.openExternal}>Abrir E14 en otra ventana</Button>
           </Col>
         </Row>
+        <h4 align="center" class="button-vista-previa">Vista previa no disponible</h4>
         <Row>
           <Col xs={12} className="iframe-content">
               <Iframe url={"https://docs.google.com/gview?url="+link+"&embedded=true"}

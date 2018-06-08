@@ -12,7 +12,7 @@ export default class E14Info extends Component {
            <h3>Información E14</h3>
          </Col>
         </Row>
-        <Row>
+        <Row className="e14-info-body">
         <Col xs={3} md={3}>
           <div>
             <h4><Label bsStyle="primary">Departamento</Label></h4>  

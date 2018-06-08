@@ -46,7 +46,8 @@ export default class FraudForm extends Component {
       </div>
       :
       <div>
-        <h4>Formulario de E14 sospechoso</h4>
+        <br mdHidden lgHidden />
+        <h4 style={{fontWeight: 'bold'}}>Formulario de E14 sospechoso</h4>
         <div className="fraude-form">
           <br/>
           <SelectCandidate
