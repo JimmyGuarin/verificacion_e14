@@ -69,7 +69,7 @@ export default class ModalAyuda extends Component {
             bsSize="large"
             aria-labelledby="contained-modal-title-lg">
             <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-lg"><h3 align="center">Instrucciones</h3></Modal.Title>
+              <Modal.Title id="contained-modal-title-lg"><h3 align="center"></h3></Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <div>
@@ -124,7 +124,7 @@ export default class ModalAyuda extends Component {
             </Modal.Body>
             <Modal.Footer>
               <h4>{this.carouselText[index]}</h4>
-              <Button onClick={this.handleClose}>Close</Button>
+              <Button onClick={this.handleClose}>Cerrar</Button>
             </Modal.Footer>
           </Modal>
         </div>

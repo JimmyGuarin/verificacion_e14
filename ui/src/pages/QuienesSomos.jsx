@@ -10,7 +10,7 @@ export default class QuienesSomos extends Component {
   render() {
     return (
       <div>
-          <img  width="50%" height="auto"  src={rysoftLogo} alt="Rysoft Logo" />
+          <img className="logo-about" width="50%" height="auto"  src={rysoftLogo} alt="Rysoft Logo" />
           <br/>
           <h5 className= "text-about" align="center">
 En Rysoft creemos que la tecnología debe estar al servicio de la sociedad y por lo tanto trabajamos
