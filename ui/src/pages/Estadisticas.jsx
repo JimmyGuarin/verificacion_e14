@@ -58,8 +58,8 @@ export default class Estadisticas extends Component {
             /> 
             </div>
             </Col>
-            <Col md={12} style={{marginTop:'-10%'}}>
-             <h5 align="center">Valores tomados de <span style={{fontWeight: 'bold'}}>{totalRevisiones}</span> revisiones en un número de <span style={{fontWeight: 'bold'}}>{totalE14Revisados}</span> formatos e14</h5>
+            <Col md={12}>
+             <h5 align="center">Valores tomados de <span style={{fontWeight: 'bold'}}>{totalRevisiones}</span> revisiones en un total de <span style={{fontWeight: 'bold'}}>{totalE14Revisados}</span> formatos e14 con anomalías</h5>
             </Col>
         </Row>
           : null
