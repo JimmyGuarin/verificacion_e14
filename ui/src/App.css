@@ -112,6 +112,10 @@ iframe {
     margin-left: 3px;
   }
 
+  .carousel-indicators {
+    bottom: -38px;
+  }
+
   .e14-info-body {
     margin-left: 2px;
     margin-right: 2px;
