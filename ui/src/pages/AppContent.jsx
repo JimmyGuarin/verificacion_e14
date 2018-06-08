@@ -65,8 +65,7 @@ class AppContent extends Component {
             <Redirect to="/verificar"/>
           </Switch>
           {
-            (this.state.showHelpModal || 
-            (!this.helpViewed && this.state.user.reportes < 100 ))  ?
+            (this.state.showHelpModal || !this.helpViewed)  ?
               <ModalAyuda onHide={this.closeHelpModal}/> : null
           }
       </div>
