@@ -104,6 +104,11 @@ iframe {
   max-width: 500px;
 }
 
+.container-estadisticas {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
 @media only screen and (max-width: 719px) {
   .buttons-action{
     width: 100%;

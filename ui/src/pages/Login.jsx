@@ -63,5 +63,4 @@ export default class Login extends Component {
     if(this.Auth.loggedIn())
       this.props.history.replace('/');
   }
-
 }

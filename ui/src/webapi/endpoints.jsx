@@ -37,6 +37,12 @@ export function getCandidates() {
   })    
 }
 
+export function getResumen() {
+  return get(apiRoot + '/stats/resumen', {
+    accept: "application/json"
+  })
+}
+
 export function sendReport(data) {
   return post(apiRoot + '/saveReport', data)    
 }

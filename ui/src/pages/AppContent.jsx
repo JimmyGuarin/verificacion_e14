@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Validador from './Validador';
 import QuienesSomos from './QuienesSomos';
+import Estadisticas from './Estadisticas';
 import NavigationBar from '../ui-components/NavigationBar';
 import AuthService from '../services/AuthService';
 import { getUserInfo } from "../webapi/endpoints";
@@ -62,6 +63,8 @@ class AppContent extends Component {
           <Switch>
             <Route exact path="/verificar" render={() => (<Validador {...props} />)}/>
             <Route exact path="/quienesomos" component={QuienesSomos}/>
+            <Route exact path="/estadisticas" component={Estadisticas}/>
+            Estadisticas
             <Redirect to="/verificar"/>
           </Switch>
           {
