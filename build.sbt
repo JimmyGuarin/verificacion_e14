@@ -31,3 +31,5 @@ libraryDependencies ++= Seq(
   //JWT
   "com.pauldijou" %% "jwt-play" % "0.16.0"
 )
+
+pipelineStages := Seq(digest)
