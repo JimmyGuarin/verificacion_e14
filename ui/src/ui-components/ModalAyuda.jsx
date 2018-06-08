@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Modal, Button, Carousel } from 'react-bootstrap';
+import step1 from '../images/caraousel-help/step1.png';
 import step2 from '../images/caraousel-help/step2.png';
 import step3 from '../images/caraousel-help/step3.png';
 import step3_2 from '../images/caraousel-help/step3_2.png';
@@ -12,6 +13,7 @@ import step9 from '../images/caraousel-help/step9.png';
 import step11 from '../images/caraousel-help/step11.png';
 import step12 from '../images/caraousel-help/step12.png';
 import step13 from '../images/caraousel-help/step13.png';
+import step14 from '../images/caraousel-help/step14.png';
 
 
 export default class ModalAyuda extends Component {
@@ -61,8 +63,8 @@ export default class ModalAyuda extends Component {
       const { show, index, direction } = this.state;
       return (
         <div>
-          <Modal 
-            show={show} 
+          <Modal
+            show={show}
             onHide={this.handleClose}
             bsSize="large"
             aria-labelledby="contained-modal-title-lg">
@@ -76,8 +78,7 @@ export default class ModalAyuda extends Component {
                 direction={direction}
                 onSelect={this.handleSelect}>
                 <Carousel.Item>
-                    <h1> GRACIAS POR HACER PARTE DE TRANSPARENCIA ELECTORAL </h1>
-                    <h4> INSERT TEXT HERE </h4>
+                    <img width="100%" height="auto" src={step1} alt="2"/>
                 </Carousel.Item>
                 <Carousel.Item>
                     <img width="100%" height="auto" src={step2} alt="2"/>
@@ -89,7 +90,7 @@ export default class ModalAyuda extends Component {
                     <img width="100%" height="auto" src={step3_2} alt="3" />
                 </Carousel.Item>
                 <Carousel.Item>
-                    <img width="100%" height="auto" src={step4} alt="4" /> 
+                    <img width="100%" height="auto" src={step4} alt="4" />
                 </Carousel.Item>
                 <Carousel.Item>
                     <img width="100%" height="auto" src={step5} alt="5" />
@@ -114,6 +115,9 @@ export default class ModalAyuda extends Component {
                 </Carousel.Item>
                 <Carousel.Item>
                     <img width="100%" height="auto" src={step13} alt="9" />
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img width="100%" height="auto" src={step14} alt="9" />
                 </Carousel.Item>
                 </Carousel>
               </div>
