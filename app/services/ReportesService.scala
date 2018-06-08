@@ -240,16 +240,19 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       data <- agrupadosPorCandidatoYVoto
     } yield {
       Logger.debug(s"En yield de votosReportadosByCandidato ${data.size}")
-      val zero = candidatos.map(c => (c, 0)).toMap
+      val zero = candidatos.map(c => (c, (0, Set[E14]()))).toMap
       val sumaPorCandidato = data.foldLeft(zero){ case (acc, (e14, porCandidato)) =>
-        val conVotos = porCandidato.map{ case (k, v) => (k, v.votosReportados) }
+        val conVotos = porCandidato.map{ case (k, v) => (k, (v.votosReportados, Set(e14))) }
         acc |+| conVotos
       }
       val statsDetalleE14 = data
         .map{case (k, v) => (k, v.toSeq.map(StatsDetalleCandidato.tupled))}
         .toSeq
         .map(StatsDetallesE14.tupled)
-      ResumenSumatoria(sumaPorCandidato.toSeq.map(StatsResumenCandidato.tupled), statsDetalleE14)
+      val resumenToJson = sumaPorCandidato.toSeq.map { case (candidato, (votos, e14s)) =>
+        StatsResumenCandidato(candidato, votos, e14s)
+      }
+      ResumenSumatoria(resumenToJson, statsDetalleE14)
     }
   }
 }
