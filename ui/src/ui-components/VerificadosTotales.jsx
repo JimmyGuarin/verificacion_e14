@@ -22,6 +22,7 @@ export default class VerificadosTotales extends Component {
     }
 
     componentDidMount() {
+      this.obtenerNumeroVerificados();
       setInterval(this.obtenerNumeroVerificados, 60000);
     }
 }

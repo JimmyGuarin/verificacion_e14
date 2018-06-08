@@ -16,7 +16,8 @@ class AppContent extends Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.updateUserInfo = this.updateUserInfo.bind(this);
         this.showHelpModal = this.showHelpModal.bind(this);
-        this.closeHelpModal= this.closeHelpModal.bind(this);
+        this.closeHelpModal = this.closeHelpModal.bind(this);
+        this.helpViewed = localStorage.getItem('help_viewed'); 
         this.state = {
           user: {
             name: "",
@@ -41,6 +42,8 @@ class AppContent extends Component {
     }
 
     closeHelpModal() {
+      if (!this.helpViewed)
+        localStorage.setItem('help_viewed', true);
       this.setState({showHelpModal: false});
     }
 
@@ -62,15 +65,15 @@ class AppContent extends Component {
             <Redirect to="/verificar"/>
           </Switch>
           {
-            (this.state.showHelpModal) ?
-            <ModalAyuda onHide={this.closeHelpModal}/> : null
+            (this.state.showHelpModal || 
+            (!this.helpViewed && this.state.user.reportes < 100 ))  ?
+              <ModalAyuda onHide={this.closeHelpModal}/> : null
           }
       </div>
     );
   }
 
   componentDidMount() {
-    console.log("componentDidMount Content");
     getUserInfo().then(res => {
       let user = res.response;
       this.setState({user: user});
