@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 
-import { getPorcentajeTotal } from '../webapi/endpoints';
-
 export default class TitleApp extends Component {
    
     render() {

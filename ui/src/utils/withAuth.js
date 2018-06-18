@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AuthService from '../services/AuthService';
+import { prefixRoute } from '../webapi/endpoints';
 
 export default function withAuth(AuthComponent) {
     const Auth = new AuthService();
@@ -12,7 +13,7 @@ export default function withAuth(AuthComponent) {
         }
         componentWillMount() {
             if (!Auth.loggedIn()) {
-                this.props.history.replace('/login')
+                this.props.history.replace(prefixRoute + '/login')
             }
             else {
                 try {
@@ -23,7 +24,7 @@ export default function withAuth(AuthComponent) {
                 }
                 catch(err){
                     Auth.logout()
-                    this.props.history.replace('/login')
+                    this.props.history.replace(prefixRoute + '/login')
                 }
             }
         }

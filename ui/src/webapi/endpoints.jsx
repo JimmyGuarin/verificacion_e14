@@ -6,6 +6,7 @@ import { getToken } from '../services/AuthService';
 // };
   
 const appPrefix = 'pv';
+export const prefixRoute = "/"+appPrefix;
 export const apiRoot = '/' + appPrefix + '/api';
 
 export function getNewE14() {
