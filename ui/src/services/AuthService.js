@@ -1,15 +1,18 @@
 //https://hptechblogs.com/using-json-web-token-react/
 import decode from 'jwt-decode';
+import { apiRoot } from '../webapi/endpoints';
+const token_name = "pv_id_token";
+
 
 export function getToken() {
     // Retrieves the user token from localStorage
-    return localStorage.getItem('id_token')
+    return localStorage.getItem(token_name)
 }
 
 export default class AuthService {
     // Initializing important variables
     constructor(domain) {
-        this.domain = domain || '/api' // API server domain
+        this.domain = domain || apiRoot// API server domain
         this.fetch = this.fetch.bind(this) // React binding stuff
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -50,12 +53,12 @@ export default class AuthService {
 
     setToken(idToken) {
         // Saves user token to localStorage
-        localStorage.setItem('id_token', idToken)
+        localStorage.setItem(token_name, idToken)
     }
 
     logout() {
         // Clear user token and profile data from localStorage
-        localStorage.removeItem('id_token');
+        localStorage.removeItem(token_name);
     }
 
     getProfile() {

@@ -3,7 +3,7 @@ import loginLogo from '../images/logo_login.png';
 import { Row, Col } from 'react-bootstrap';
 import GoogleLogin from 'react-google-login';
 import AuthService from '../services/AuthService';
-
+import TitleApp from '../ui-components/TitleApp';
 
 export default class Login extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ export default class Login extends Component {
       <div>
         <Row>
           <Col xsOffset={2} mdOffset={4} xs={8} md={4}>
-            <h1 align="center">Verificación E14</h1>
+            <TitleApp />
           </Col>
         </Row>
         <br/>

@@ -5,6 +5,7 @@ import { Row, Col} from 'react-bootstrap';
 import MainContent from '../ui-components/MainContent';
 import VerificadosTotales from '../ui-components/VerificadosTotales';
 import { getDepartamentos, getMunicipios} from '../webapi/endpoints';
+import TitleApp from '../ui-components/TitleApp';
 
 class Validador extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class Validador extends Component {
       <div className="App">
         <Row>
           <Col xsOffset={0} xs={12}>
-            <h1 align="center">Verificación E14</h1>
+            <TitleApp />
             <VerificadosTotales />
           </Col>
         </Row>
