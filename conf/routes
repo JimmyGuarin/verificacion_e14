@@ -7,8 +7,20 @@
 ### NoDocs ###
 GET     /                           controllers.HomeController.reactApp
 
+GET     /pv                           controllers.HomeController.reactApp
+GET     /sv                           controllers.HomeController.reactApp
+
+
 # Api definition
 ->     /api                          api.Routes
 
+->     /pv/api                          api.Routes
+
+->     /sv/api                          api.Routes
+
 ### NoDocs ###
 GET     /*file                      controllers.HomeController.assetOrDefault(file)
+
+GET     /pv/*file                      controllers.HomeController.assetOrDefault(file)
+
+GET     /sv/*file                      controllers.HomeController.assetOrDefault(file)
