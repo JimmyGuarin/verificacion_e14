@@ -45,7 +45,7 @@ class E14Dao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider, 
     def departamento = column[String]("departamento")
     def municipio = column[String]("municipio")
     def zona = column[String]("zona")
-    def puesto= column[String]("zona")
+    def puesto= column[String]("puesto")
 
 
     def * = (link, /*mesa,*/ departamento, municipio, zona, puesto, id.?) <> (E14.tupled, E14.unapply)
