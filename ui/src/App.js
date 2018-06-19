@@ -6,7 +6,6 @@ import Login from './pages/Login';
 import AppContent from './pages/AppContent';
 import './App.css';
 import withAuth from './utils/withAuth';
-import { prefixRoute } from './webapi/endpoints';
 
 class App extends Component {
   
