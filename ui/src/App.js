@@ -13,9 +13,9 @@ class App extends Component {
   render() {
     return (
       <Switch>
-        <Route exact path={prefixRoute + "/login"} component={Login}/>
+        <Route exact path="/login" component={Login}/>
         <Route path="/" component={withAuth(AppContent)}/>
-        <Redirect to={prefixRoute + "/verificar"}/>
+        <Redirect to="/verificar"/>
       </Switch>
     );
   }

@@ -5,9 +5,9 @@ import { getToken } from '../services/AuthService';
 //   credentials: 'same-origin',
 // };
   
-const appPrefix = 'pv';
-export const prefixRoute = "/"+appPrefix;
-export const apiRoot = '/' + appPrefix + '/api';
+const appPrefix = '';
+export const prefixRoute = ""+appPrefix;
+export const apiRoot = '/api';
 
 export function getNewE14() {
   return get(apiRoot + '/newe14', {
