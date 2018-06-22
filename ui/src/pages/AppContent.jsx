@@ -9,7 +9,6 @@ import NavigationBar from '../ui-components/NavigationBar';
 import AuthService from '../services/AuthService';
 import { getUserInfo } from "../webapi/endpoints";
 import ModalAyuda from '../ui-components/ModalAyuda';
-import { prefixRoute } from '../webapi/endpoints';
 
 const Auth = new AuthService();
 
@@ -33,7 +32,7 @@ class AppContent extends Component {
 
     handleLogout(){
        Auth.logout()
-      this.props.history.replace(prefixRoute + '/login');
+      this.props.history.replace('/login');
     }
 
     updateUserInfo(user) {
@@ -63,11 +62,11 @@ class AppContent extends Component {
             handleLogout={this.handleLogout}
             user={this.state.user}/>
           <Switch>
-            <Route exact path={prefixRoute + "/verificar"} render={() => (<Validador {...props} />)}/>
-            <Route exact path={prefixRoute + "/quienesomos"} component={QuienesSomos}/>
-            <Route exact path={prefixRoute + "/estadisticas"} component={Estadisticas}/>
+            <Route exact path="/verificar" render={() => (<Validador {...props} />)}/>
+            <Route exact path="/quienesomos" component={QuienesSomos}/>
+            <Route exact path="/estadisticas" component={Estadisticas}/>
             Estadisticas
-            <Redirect to={prefixRoute + "/verificar"}/>
+            <Redirect to="/verificar"/>
           </Switch>
           {
             (this.state.showHelpModal || !this.helpViewed)  ?

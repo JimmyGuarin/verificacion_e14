@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { Navbar, Nav, NavItem, Badge, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { prefixRoute } from '../webapi/endpoints';
 
 export default class NavigationBar extends Component {
 
@@ -34,16 +33,16 @@ export default class NavigationBar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
             <Nav>
-            <NavItem eventKey={1} href={prefixRoute + "/validar"}>
+            <NavItem eventKey={1} href="/validar">
                 Verificar E14
             </NavItem>
-            <NavItem eventKey={2} href={prefixRoute + "/estadisticas"}>
+            <NavItem eventKey={2} href="/estadisticas">
                 Estadísticas
             </NavItem>
             <NavItem eventKey={2} onClick={showHelpModal} >
                 Ayuda
             </NavItem>
-            <NavItem eventKey={2} href={prefixRoute + "/quienesomos"}>
+            <NavItem eventKey={2} href="/quienesomos">
               ¿Quiénes somos?
             </NavItem>
             </Nav>
