@@ -16,4 +16,6 @@ GET     /stats/porcentaje   controllers.api.ReportesControllerApi.statsPorcentaj
 
 GET     /stats/resumen      controllers.api.ReportesControllerApi.statsSumatoriaResumen
 
-GET     /stats/pdfsospechoso/:id      controllers.api.ReportesControllerApi.obtenerPDFSospechoso(id: Int)
+GET     /stats/pdfsospechosos/:id      controllers.api.ReportesControllerApi.obtenerPDFSospechoso(id: Int)
+
+GET     /pdfsospechosos/actualizar      controllers.api.ReportesControllerApi.actualizarPDFSospechosos

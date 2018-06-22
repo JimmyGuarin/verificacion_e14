@@ -236,7 +236,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
             (votosSospechosos, VotosReportadosCount(seqReportes.size, seqReportes.map { case (re14, detalle) =>
               DetalleReporteStats(re14, DetalleReporteSospechosoDto(detalle.reporteId, detalle.candidatoId,
                 detalle.votosSospechoso, detalle.id,
-                detalle.data.map(_ => s"/stats/pdfsospechoso/${detalle.id.get}"))
+                detalle.data.map(_ => s"/stats/pdfsospechosos/${detalle.id.get}"))
               )
             }
             ))
@@ -283,7 +283,6 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     } yield {
       data
     }
-
     res.run
   }
 
@@ -302,6 +301,22 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       res =>
         res.bodyAsSource.runWith(sink).map(_ => arrayBuff.toArray)
     }
+  }
+
+
+  def actualizarLinksPdfSospechosos(): Future[Unit] = {
+    detalleReporteDao.all().map(_.filter(_.data.isEmpty).foreach(
+      ds => {
+        val res = for {
+          e14 <- OptionT(e14Dao.getById(ds.reporteId))
+          pdfData <- OptionT(obtenerPDFRegistraduria(e14.link).map(Option(_)))
+        } yield {
+          Logger.debug(s"data ${pdfData}")
+          detalleReporteDao.actualizar(ds.copy(data = Some(pdfData)))
+        }
+        res.run
+      }
+    ))
   }
 
 }

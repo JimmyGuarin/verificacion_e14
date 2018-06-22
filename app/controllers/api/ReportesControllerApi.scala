@@ -109,4 +109,13 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
       }
     }
   }
+
+  def actualizarPDFSospechosos = Action.async { implicit rs =>
+    CustomResponse.asyncResultz {
+      reportesService
+        .actualizarLinksPdfSospechosos()
+        .map(_ => "Links actualizados correctamente".right)
+    }
+  }
+
 }
