@@ -305,10 +305,11 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
 
   def actualizarLinksPdfSospechosos(): Future[Unit] = {
-    detalleReporteDao.all().map(_.filter(_.data.isEmpty).foreach(
+    detalleReporteDao.all().map(_.foreach(
       ds => {
         val res = for {
-          e14 <- OptionT(e14Dao.getById(ds.reporteId))
+          reporte <- OptionT(reporteE14Dao.getById(ds.reporteId))
+          e14 <- OptionT(e14Dao.getById(reporte.e4Id))
           pdfData <- OptionT(obtenerPDFRegistraduria(e14.link).map(Option(_)))
         } yield {
           Logger.debug(s"data ${pdfData}")

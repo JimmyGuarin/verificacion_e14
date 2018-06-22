@@ -15,6 +15,10 @@ class ReporteE14Dao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
 
   def all(): Future[Seq[ReporteE14]] = db.run(reportesE14Table.result)
 
+  def getById(id: Int): Future[Option[ReporteE14]] = {
+    db.run(reportesE14Table.filter(_.id === id).result).map(_.headOption)
+  }
+
   def getReporte(usuarioId: Int, e14Id: Int): Future[Option[ReporteE14]] = {
     val result = reportesE14Table.filter(r => r.usuarioId === usuarioId && r.e14Id === e14Id).result
     db.run(result).map(_.headOption)
