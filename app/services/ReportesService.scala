@@ -126,6 +126,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   private def guardarDetalles(reporte: ReporteE14, detallesReporteJson: Seq[DetalleReporteJson]): Future[CustomResponse.ApiResponsez[String]] = {
     val data = "Test".getBytes()
 
+    //TODO get pdf bytes
     val detallesReporte = detallesReporteJson.map { detalle =>
       DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos, Some(data))
     }
@@ -151,6 +152,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
         val response = wsClient.url(url)
           .post(Map("secret" -> Seq("6Ld9zlwUAAAAAEsWpx0O2CWbWGT9A9mjHZKoCwI3"), "response" -> Seq(c)))
         response.map { wsResponse =>
+
           val respuestaCaptcha = wsResponse.json.validate[RespuestaCaptcha].get
           if (respuestaCaptcha.success) {
             ().right
