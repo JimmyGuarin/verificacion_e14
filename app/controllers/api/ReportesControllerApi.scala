@@ -97,4 +97,16 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
     }
   }
 
+  def obtenerPDFSospechoso(detalleId: Int) = Action.async { implicit rs =>
+    authenticated(rs) { _ =>
+      reportesService
+        .obtenerPDFSospechoso(detalleId).map { mbytes =>
+        mbytes.map(bytes =>
+          Ok(bytes).as("application/pdf")
+        ).getOrElse(
+          NotFound
+        )
+      }
+    }
+  }
 }

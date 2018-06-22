@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets
 
 import javax.inject.Singleton
 import akka.actor.ActorSystem
+import akka.util.ByteString
 import core.CustomResponse
 import core.CustomResponse.{ApiResponsez, _}
 import core.util._
@@ -12,25 +13,26 @@ import models._
 import play.api.Logger
 import play.api.cache.AsyncCacheApi
 import play.api.http.Status
-import play.api.libs.ws.WSClient
+import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.Random
 import scalaz.Scalaz._
 import scalaz._
+import akka.stream.scaladsl.Sink
+import akka.stream.{ActorMaterializer, Materializer}
+import akka.stream.scaladsl._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 
 
-
 case class CandVotoGroup(candId: Int, votos: Int)
-case class DetallesCount(repetidosCount: Int, detalles:  Seq[(ReporteE14, DetalleReporteSospechosoDto)])
+
+case class DetallesCount(repetidosCount: Int, detalles: Seq[(ReporteE14, DetalleReporteSospechosoDto)])
+
 case class AgrupadoModa(candVotoGroup: CandVotoGroup, detallesCount: DetallesCount, todosGoups: Map[CandVotoGroup, DetallesCount])
-
-
-
-
 
 
 @Singleton
@@ -42,7 +44,8 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
                                              cache: AsyncCacheApi,
                                              actorSystem: ActorSystem,
                                              encryption: E14Encryption)(
-                                              implicit executionContext: ExecutionContext) {
+                                              implicit executionContext: ExecutionContext,
+                                              mat: Materializer) {
 
   import core.util.JsonFormats._
 
@@ -53,10 +56,10 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   private val porcentajeVerificado = "porcentaje_verificado"
 
 
-//  val estadisticasJob = actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 1.minute) {
-////    cache.remove(estadisticasCacheKey)
-//    votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
-//  }
+  //  val estadisticasJob = actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 1.minute) {
+  ////    cache.remove(estadisticasCacheKey)
+  //    votosReportadosByCandidato.foreach(stats => cache.set(estadisticasCacheKey, stats))
+  //  }
 
   def getRandomE14(usuario: Usuario): Future[ApiResponsez[E14Encript]] = {
 
@@ -102,7 +105,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       nextRandom <- nextRandomE14(maxId, totalE14)
       withStats <- withStats(nextRandom)
     } yield {
-      withStats.map{ case (randomE14, reportes) =>
+      withStats.map { case (randomE14, reportes) =>
         encryptId(randomE14)
           .copy(reportes = reportes)
       }.toRightDisjunction(
@@ -117,30 +120,31 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
 
     for {
       reporteGuardado <- reporteE14Dao.guardarReporte(reporteE14)
-      mensaje <- guardarDetalles(reporteGuardado, reporteJson.detalles)
+      e14 <- e14Dao.getById(e14Id)
+      mensaje <- guardarDetalles(e14.get, reporteGuardado, reporteJson.detalles)
     } yield {
       mensaje
     }
   }
 
-  private def guardarDetalles(reporte: ReporteE14, detallesReporteJson: Seq[DetalleReporteJson]): Future[CustomResponse.ApiResponsez[String]] = {
-    val data = "Test".getBytes()
+  private def guardarDetalles(e14: E14, reporte: ReporteE14, detallesReporteJson: Seq[DetalleReporteJson]): Future[CustomResponse.ApiResponsez[String]] = {
+    obtenerPDFRegistraduria(e14.link).map({
+      bytes =>
+        val detallesReporte = detallesReporteJson.map { detalle =>
+          DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos, Some(bytes))
+        }
 
-    //TODO get pdf bytes
-    val detallesReporte = detallesReporteJson.map { detalle =>
-      DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos, Some(data))
-    }
-    val seqFuture = detallesReporte.map { detalle =>
-      detalleReporteDao.guardarDetalle(detalle)
-    }
+        val seqFuture = detallesReporte.map { detalle =>
+          detalleReporteDao.guardarDetalle(detalle)
+        }
 
-    Future.sequence(seqFuture).map { seqSaves =>
-      val zero: CustomResponse.ApiResponsez[String] = "Nothing saved".right
-      seqSaves.foldLeft(zero) { case (nextResponse, _) =>
-        nextResponse
-      }
-    }
-    //    Future.sequence(seqFuture)
+        Future.sequence(seqFuture).map { seqSaves =>
+          val zero: CustomResponse.ApiResponsez[String] = "Nothing saved".right
+          seqSaves.foldLeft(zero) { case (nextResponse, _) =>
+            nextResponse
+          }
+        }
+    }).flatten
   }
 
   def validarCaptcha(valorCaptcha: Option[String], e14Valido: Boolean): Future[CustomResponse.ApiResponsez[Unit]] = {
@@ -173,17 +177,13 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     }
 
     agrupadoPorE14.map { agrupados =>
-      agrupados.map{ case (e14Id, reportes) =>
-          val agrupadoCandVoto = reportes
-            .groupBy{case (_, detalles) =>
-              Logger.debug(s"In data ${detalles.data}")
-              if(detalles.data.isDefined) {
-                Logger.debug(s"Data ${new String(detalles.data.get, StandardCharsets.UTF_8)}")
-              }
-              (detalles.candidatoId, detalles.votosSospechoso)
-            }
-            .map{ case((candidatoId, votos), detalles) => (CandVotoGroup(candidatoId, votos), DetallesCount(detalles.size, detalles.map(y => (y._1, null)))) }
-          val agrupadoCandVotoModa = agrupadoCandVoto.maxBy{case (key, value) => value.repetidosCount}
+      agrupados.map { case (e14Id, reportes) =>
+        val agrupadoCandVoto = reportes
+          .groupBy { case (_, detalles) =>
+            (detalles.candidatoId, detalles.votosSospechoso)
+          }
+          .map { case ((candidatoId, votos), detalles) => (CandVotoGroup(candidatoId, votos), DetallesCount(detalles.size, detalles.map(y => (y._1, null)))) }
+        val agrupadoCandVotoModa = agrupadoCandVoto.maxBy { case (key, value) => value.repetidosCount }
         (e14Id, AgrupadoModa(agrupadoCandVotoModa._1, agrupadoCandVotoModa._2, agrupadoCandVoto))
       }
     }
@@ -191,7 +191,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   private def porcentajeE14Verificado: Future[Double] = {
-    for{
+    for {
       totalE14 <- e14Dao.totalRegistros()
       totalVerificados <- reporteE14Dao.totalVerificados
     } yield {
@@ -200,18 +200,18 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   def porcentajeE14VerificadoFromCache: Future[Double] = {
-    cache.getOrElseUpdate(porcentajeVerificado, 1.minute){
+    cache.getOrElseUpdate(porcentajeVerificado, 1.minute) {
       porcentajeE14Verificado
     }
   }
 
   def estadisticasFromCache: Future[ResumenSumatoria] = {
-    cache.getOrElseUpdate(estadisticasCacheKey, 5.minutes){
+    cache.getOrElseUpdate(estadisticasCacheKey, 5.minutes) {
       votosReportadosByCandidato
     }
   }
 
-  def agrupadosPorCandidatoYVoto: Future[Map[E14, Map[Candidato, DetallesGroupedByVotos]]]  = {
+  def agrupadosPorCandidatoYVoto: Future[Map[E14, Map[Candidato, DetallesGroupedByVotos]]] = {
 
     for {
       candidatos <- candidatoDao.all()
@@ -226,18 +226,20 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       val e14ConReportesInvalidosMap = e14ConReportesInvalidos.map(e => (e.id.get, e)).toMap
 
       agrupados.map { case (e14Id, reportes) =>
-        val groupByCandidato = reportes.groupBy{case(_, detalle) =>
-          Logger.debug(s"In data ${detalle.data}")
-          if(detalle.data.isDefined) {
-            Logger.debug(s"Data ${new String(detalle.data.get, StandardCharsets.UTF_8)}")
-          }
+        val groupByCandidato = reportes.groupBy { case (_, detalle) =>
           detalle.candidatoId
         }
 
-        val groupByCandidatoYVotos = groupByCandidato.map{case (candId, reportesDetalle) =>
-          val detallesGroupedByVotos = reportesDetalle.groupBy{case(_, det) => det.votosSospechoso}
-          val detallesGroupedByVotosConteo = detallesGroupedByVotos.map{case (votosSospechosos, seqReportes) =>
-            (votosSospechosos, VotosReportadosCount(seqReportes.size, seqReportes.map(DetalleReporteStats.tupled)))
+        val groupByCandidatoYVotos = groupByCandidato.map { case (candId, reportesDetalle) =>
+          val detallesGroupedByVotos = reportesDetalle.groupBy { case (_, det) => det.votosSospechoso }
+          val detallesGroupedByVotosConteo = detallesGroupedByVotos.map { case (votosSospechosos, seqReportes) =>
+            (votosSospechosos, VotosReportadosCount(seqReportes.size, seqReportes.map { case (re14, detalle) =>
+              DetalleReporteStats(re14, DetalleReporteSospechosoDto(detalle.reporteId, detalle.candidatoId,
+                detalle.votosSospechoso, detalle.id,
+                detalle.data.map(_ => s"/stats/pdfsospechoso/${detalle.id.get}"))
+              )
+            }
+            ))
           }
           val detallesGroupedByVotosModa = detallesGroupedByVotosConteo.maxBy(_._1)
 
@@ -251,7 +253,7 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     }
   }
 
-  def votosReportadosByCandidato :  Future[ResumenSumatoria]= {
+  def votosReportadosByCandidato: Future[ResumenSumatoria] = {
 
     for {
       candidatos <- candidatoDao.all()
@@ -259,12 +261,12 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     } yield {
       Logger.debug(s"En yield de votosReportadosByCandidato ${data.size}")
       val zero = candidatos.map(c => (c, (0, Set[E14](), 0))).toMap
-      val sumaPorCandidato = data.foldLeft(zero){ case (acc, (e14, porCandidato)) =>
-        val conVotos = porCandidato.map{ case (k, v) => (k, (v.votosReportados, Set(e14), v.reportesDetalles.cantReportes)) }
+      val sumaPorCandidato = data.foldLeft(zero) { case (acc, (e14, porCandidato)) =>
+        val conVotos = porCandidato.map { case (k, v) => (k, (v.votosReportados, Set(e14), v.reportesDetalles.cantReportes)) }
         acc |+| conVotos
       }
       val statsDetalleE14 = data
-        .map{case (k, v) => (k, v.toSeq.map(StatsDetalleCandidato.tupled))}
+        .map { case (k, v) => (k, v.toSeq.map(StatsDetalleCandidato.tupled)) }
         .toSeq
         .map(StatsDetallesE14.tupled)
       val resumenToJson = sumaPorCandidato.toSeq.map { case (candidato, (votos, e14s, cantReportes)) =>
@@ -273,4 +275,33 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       ResumenSumatoria(resumenToJson, statsDetalleE14)
     }
   }
+
+  def obtenerPDFSospechoso(detalleId: Int) = {
+    val res = for {
+      detalleE14 <- OptionT(detalleReporteDao.getById(detalleId))
+      data <- OptionT(Future.successful(detalleE14.data))
+    } yield {
+      data
+    }
+
+    res.run
+  }
+
+
+  def obtenerPDFRegistraduria(url: String): Future[Array[Byte]] = {
+    val request: Future[WSResponse] = wsClient
+      .url(url)
+      .withMethod("GET").stream()
+
+    var arrayBuff = ArrayBuffer[Byte]()
+    val sink = Sink.foreach[ByteString] { bytes =>
+      val o = bytes.toArray
+      arrayBuff = arrayBuff ++= o
+    }
+    request.flatMap {
+      res =>
+        res.bodyAsSource.runWith(sink).map(_ => arrayBuff.toArray)
+    }
+  }
+
 }

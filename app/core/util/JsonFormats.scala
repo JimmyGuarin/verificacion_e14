@@ -19,7 +19,7 @@ case class GUserInfo(id: String, email: String, name: String)
 case class UsuarioJson(name: String, email: String, reportes: Int, sospechosos: Int)
 
 //Stats
-case class DetalleReporteStats(reporte: ReporteE14, detalle: DetalleReporteSospechoso)
+case class DetalleReporteStats(reporte: ReporteE14, detalle: DetalleReporteSospechosoDto)
 case class VotosReportadosCount(cantReportes: Int,  reportes: Seq[DetalleReporteStats])
 case class VotosReportadosDetalle(votos: Int, votosReportados: VotosReportadosCount)
 case class DetallesGroupedByVotos(votosReportados: Int, reportesDetalles: VotosReportadosCount, votosReportadosDetalle: Seq[VotosReportadosDetalle])
@@ -30,7 +30,7 @@ case class ResumenSumatoria(resumen:  Seq[StatsResumenCandidato], detalles: Seq[
 
 case class TotalVerificados(verificados: Double)
 
-case class DetalleReporteSospechosoDto(reporteId: Int, candidatoId: Int, votosSospechoso: Int, id: Option[Int] = None)
+case class DetalleReporteSospechosoDto(reporteId: Int, candidatoId: Int, votosSospechoso: Int, id: Option[Int] = None, linkPdf: Option[String] = None)
 
 trait JsonFormats {
 

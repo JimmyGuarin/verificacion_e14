@@ -1,14 +1,12 @@
 package daos
 
 import javax.inject.Inject
-
 import core.CustomResponse.ApiResponsez
-import models.{DetalleReporteSospechoso, ReporteE14}
+import models.{DetalleReporteSospechoso, E14, ReporteE14}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import scalaz._
 import Scalaz._
 
@@ -21,6 +19,10 @@ class DetalleReporteSospechosoDao @Inject()(protected val dbConfigProvider: Data
 
   def guardarDetalle(detalleReporte: DetalleReporteSospechoso): Future[ApiResponsez[String]] = db.run(detallesReporteSospechosoTable += detalleReporte).map { _ => "Guardado correctamente".right }
 
+  def getById(id: Int):  Future[Option[DetalleReporteSospechoso]] = {
+    val result = detallesReporteSospechosoTable.filter(_.id === id).result
+    db.run(result).map(_.headOption)
+  }
 
   private[daos] class DetallesReporteSospechosoTable(tag: Tag) extends Table[DetalleReporteSospechoso](tag, "detalle_reporte_sospechoso") {
 
