@@ -1,7 +1,8 @@
 package services
 
-import javax.inject.Singleton
+import java.nio.charset.StandardCharsets
 
+import javax.inject.Singleton
 import akka.actor.ActorSystem
 import core.CustomResponse
 import core.CustomResponse.{ApiResponsez, _}
@@ -18,12 +19,13 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.Random
 import scalaz.Scalaz._
 import scalaz._
+
 import scala.concurrent.duration._
 
 
 
 case class CandVotoGroup(candId: Int, votos: Int)
-case class DetallesCount(repetidosCount: Int, detalles:  Seq[(ReporteE14, DetalleReporteSospechoso)])
+case class DetallesCount(repetidosCount: Int, detalles:  Seq[(ReporteE14, DetalleReporteSospechosoDto)])
 case class AgrupadoModa(candVotoGroup: CandVotoGroup, detallesCount: DetallesCount, todosGoups: Map[CandVotoGroup, DetallesCount])
 
 
@@ -122,8 +124,10 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   private def guardarDetalles(reporte: ReporteE14, detallesReporteJson: Seq[DetalleReporteJson]): Future[CustomResponse.ApiResponsez[String]] = {
+    val data = "Test".getBytes()
+
     val detallesReporte = detallesReporteJson.map { detalle =>
-      DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos)
+      DetalleReporteSospechoso(reporte.id.get, detalle.candidatoId, detalle.votosSospechosos, Some(data))
     }
     val seqFuture = detallesReporte.map { detalle =>
       detalleReporteDao.guardarDetalle(detalle)
@@ -169,8 +173,14 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     agrupadoPorE14.map { agrupados =>
       agrupados.map{ case (e14Id, reportes) =>
           val agrupadoCandVoto = reportes
-            .groupBy{case (_, detalles) => (detalles.candidatoId, detalles.votosSospechoso)}
-            .map{ case((candidatoId, votos), detalles) => (CandVotoGroup(candidatoId, votos), DetallesCount(detalles.size, detalles)) }
+            .groupBy{case (_, detalles) =>
+              Logger.debug(s"In data ${detalles.data}")
+              if(detalles.data.isDefined) {
+                Logger.debug(s"Data ${new String(detalles.data.get, StandardCharsets.UTF_8)}")
+              }
+              (detalles.candidatoId, detalles.votosSospechoso)
+            }
+            .map{ case((candidatoId, votos), detalles) => (CandVotoGroup(candidatoId, votos), DetallesCount(detalles.size, detalles.map(y => (y._1, null)))) }
           val agrupadoCandVotoModa = agrupadoCandVoto.maxBy{case (key, value) => value.repetidosCount}
         (e14Id, AgrupadoModa(agrupadoCandVotoModa._1, agrupadoCandVotoModa._2, agrupadoCandVoto))
       }
@@ -214,7 +224,13 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
       val e14ConReportesInvalidosMap = e14ConReportesInvalidos.map(e => (e.id.get, e)).toMap
 
       agrupados.map { case (e14Id, reportes) =>
-        val groupByCandidato = reportes.groupBy{case(_, detalle) => detalle.candidatoId}
+        val groupByCandidato = reportes.groupBy{case(_, detalle) =>
+          Logger.debug(s"In data ${detalle.data}")
+          if(detalle.data.isDefined) {
+            Logger.debug(s"Data ${new String(detalle.data.get, StandardCharsets.UTF_8)}")
+          }
+          detalle.candidatoId
+        }
 
         val groupByCandidatoYVotos = groupByCandidato.map{case (candId, reportesDetalle) =>
           val detallesGroupedByVotos = reportesDetalle.groupBy{case(_, det) => det.votosSospechoso}

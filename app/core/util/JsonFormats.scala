@@ -30,6 +30,8 @@ case class ResumenSumatoria(resumen:  Seq[StatsResumenCandidato], detalles: Seq[
 
 case class TotalVerificados(verificados: Double)
 
+case class DetalleReporteSospechosoDto(reporteId: Int, candidatoId: Int, votosSospechoso: Int, id: Option[Int] = None)
+
 trait JsonFormats {
 
   implicit val E14Format = Json.format[E14]
@@ -40,7 +42,8 @@ trait JsonFormats {
   implicit val DeptoFormat = Json.format[Departamento]
   implicit val MunicipioFormat = Json.format[Municipio]
   implicit val reporteE14Format = Json.format[ReporteE14]
-  implicit val detalleReporteSospechosoFormat = Json.format[DetalleReporteSospechoso]
+  implicit val detalleReporteSospechosoForma = Json.format[DetalleReporteSospechoso]
+  implicit val detalleReporteSospechosoFormat = Json.format[DetalleReporteSospechosoDto]
 
 
   implicit val twitterTokenFormat = Json.format[TwitterToken]

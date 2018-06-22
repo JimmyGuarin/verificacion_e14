@@ -21,6 +21,6 @@ GET     /sv                           controllers.HomeController.reactApp
 ### NoDocs ###
 GET     /*file                      controllers.HomeController.assetOrDefault(file)
 
-GET     /pv/*file                      controllers.HomeController.assetOrDefault(file)
+GET     /pv/*file                   controllers.HomeController.assetOrDefault(file)
 
-GET     /sv/*file                      controllers.HomeController.assetOrDefault(file)
+GET     /sv/*file                   controllers.HomeController.assetOrDefault(file)

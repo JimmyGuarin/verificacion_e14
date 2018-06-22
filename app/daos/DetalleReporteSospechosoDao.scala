@@ -29,6 +29,8 @@ class DetalleReporteSospechosoDao @Inject()(protected val dbConfigProvider: Data
     def candidatoId = column[Int]("candidato_id")
     def votosSospechosos = column[Int]("votos_sospechosos")
 
-    def * = (reporteId, candidatoId, votosSospechosos, id.?) <> (DetalleReporteSospechoso.tupled, DetalleReporteSospechoso.unapply)
+    def data = column[Array[Byte]]("data")
+
+    def * = (reporteId, candidatoId, votosSospechosos, data.?, id.?) <> (DetalleReporteSospechoso.tupled, DetalleReporteSospechoso.unapply)
   }
 }

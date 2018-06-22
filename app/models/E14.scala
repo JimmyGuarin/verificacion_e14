@@ -14,4 +14,4 @@ case class Candidato(nombre: String, id: Option[Int] = None)
 
 case class ReporteE14(e4Id: Int, usuarioId: Int, valido: Boolean, id: Option[Int] = None)
 
-case class DetalleReporteSospechoso(reporteId: Int, candidatoId: Int, votosSospechoso: Int, id: Option[Int] = None)
+case class DetalleReporteSospechoso(reporteId: Int, candidatoId: Int, votosSospechoso: Int, data: Option[Array[Byte]], id: Option[Int] = None)
