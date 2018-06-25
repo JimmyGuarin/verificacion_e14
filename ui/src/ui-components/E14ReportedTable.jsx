@@ -73,7 +73,7 @@ export default class E14ReportedTable extends Component {
            <td>{e.e14.puesto}</td>
            <td>{e.cantReportes}</td>
            <td>{e.votosReportados}</td>
-           <td><Button bsStyle="link" onClick={() => this.openExternal(e.link)}>Link</Button></td>
+           <td><Button bsStyle="link" onClick={() => this.openExternal(e.e14.link)}>Link</Button></td>
          </tr>);
       });
     });
