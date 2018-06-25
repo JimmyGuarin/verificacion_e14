@@ -252,15 +252,16 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
   }
 
   def votosReportadosByCandidato :  Future[ResumenSumatoria]= {
-
     for {
       candidatos <- candidatoDao.all()
       data <- agrupadosPorCandidatoYVoto
     } yield {
       Logger.debug(s"En yield de votosReportadosByCandidato ${data.size}")
-      val zero = candidatos.map(c => (c, (0, Set[E14](), 0))).toMap
+      val zero = candidatos.map(c => (c, (0, Set[E14ConReporte](), 0))).toMap
       val sumaPorCandidato = data.foldLeft(zero){ case (acc, (e14, porCandidato)) =>
-        val conVotos = porCandidato.map{ case (k, v) => (k, (v.votosReportados, Set(e14), v.reportesDetalles.cantReportes)) }
+        val conVotos = porCandidato.map{ case (k, v) =>
+          (k, (v.votosReportados, Set(E14ConReporte(e14, v.votosReportados, v.reportesDetalles.cantReportes)), v.reportesDetalles.cantReportes))
+        }
         acc |+| conVotos
       }
       val statsDetalleE14 = data
