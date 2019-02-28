@@ -13,6 +13,7 @@
     "bootstrap": "^4.1.1",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
+    "papaparse": "^4.5.0",
     "react": "^16.2.0",
     "react-async-script": "^0.9.1",
     "react-bootstrap": "^0.32.1",
