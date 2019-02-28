@@ -1,13 +1,12 @@
 package controllers.api
 
 import javax.inject.Singleton
-
 import core.CustomResponse
 import core.util.{ReporteE14Json, TotalVerificados}
 import daos.{CandidatoDao, DepartamentoDao, MunicipioDao, UsuarioDao}
 import models.{E14, E14Encript, Usuario}
 import play.api.Configuration
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents, Result}
 import services.{LoginService, ReportesService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -116,6 +115,11 @@ class ReportesControllerApi @javax.inject.Inject()(cc: ControllerComponents, rep
         .actualizarLinksPdfSospechosos()
         .map(_ => "Links actualizados correctamente".right)
     }
+  }
+
+  def getE14Reportados() = Action { implicit rs =>
+    val ooo: akka.stream.scaladsl.Source[String, Result] = ???
+    Ok.chunked(ooo)
   }
 
 }

@@ -27,6 +27,10 @@ class DetalleReporteSospechosoDao @Inject()(protected val dbConfigProvider: Data
   def actualizar(detalleReporte: DetalleReporteSospechoso): Future[ApiResponsez[Int]] =
     db.run(detallesReporteSospechosoTable.filter(_.id === detalleReporte.id.get).update(detalleReporte)).map { _.right}
 
+  def getAllSource() = {
+    akka.stream.scaladsl.Source.fromPublisher(db.stream(detallesReporteSospechosoTable.result))
+  }
+
   private[daos] class DetallesReporteSospechosoTable(tag: Tag) extends Table[DetalleReporteSospechoso](tag, "detalle_reporte_sospechoso") {
 
     def id = column[Int] ("id", O.PrimaryKey, O.AutoInc)

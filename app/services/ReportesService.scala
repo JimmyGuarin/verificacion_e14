@@ -321,4 +321,8 @@ class ReportesService @javax.inject.Inject()(e14Dao: E14Dao,
     ))
   }
 
+//  def todosLosRegistros = {
+//    detalleReporteDao.getAllSource()
+//  }
+
 }

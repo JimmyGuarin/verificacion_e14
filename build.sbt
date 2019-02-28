@@ -29,7 +29,8 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "42.1.1",
   //"com.twitter" % "joauth" % "6.0.2",
   //JWT
-  "com.pauldijou" %% "jwt-play" % "0.16.0"
+  "com.pauldijou" %% "jwt-play" % "0.16.0",
+  "com.typesafe.akka" %% "akka-stream" % "2.5.13"
 )
 
 pipelineStages := Seq(digest)
